@@ -23,6 +23,13 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiDirectionsRouteImport } from './routes/api/directions'
+import { Route as AdminUtilizadoresRouteImport } from './routes/admin.utilizadores'
+import { Route as AdminSalaRouteImport } from './routes/admin.sala'
+import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
+import { Route as AdminLocalizacaoRouteImport } from './routes/admin.localizacao'
+import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
+import { Route as AdminEscolaRouteImport } from './routes/admin.escola'
+import { Route as AdminBibliotecaRouteImport } from './routes/admin.biblioteca'
 
 const VisitarRoute = VisitarRouteImport.update({
   id: '/visitar',
@@ -94,10 +101,45 @@ const ApiDirectionsRoute = ApiDirectionsRouteImport.update({
   path: '/api/directions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUtilizadoresRoute = AdminUtilizadoresRouteImport.update({
+  id: '/utilizadores',
+  path: '/utilizadores',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSalaRoute = AdminSalaRouteImport.update({
+  id: '/sala',
+  path: '/sala',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLocalizacaoRoute = AdminLocalizacaoRouteImport.update({
+  id: '/localizacao',
+  path: '/localizacao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminGaleriaRoute = AdminGaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEscolaRoute = AdminEscolaRouteImport.update({
+  id: '/escola',
+  path: '/escola',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBibliotecaRoute = AdminBibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
   '/favoritos': typeof FavoritosRoute
@@ -109,11 +151,18 @@ export interface FileRoutesByFullPath {
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
+  '/admin/biblioteca': typeof AdminBibliotecaRoute
+  '/admin/escola': typeof AdminEscolaRoute
+  '/admin/galeria': typeof AdminGaleriaRoute
+  '/admin/localizacao': typeof AdminLocalizacaoRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
+  '/admin/sala': typeof AdminSalaRoute
+  '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/api/directions': typeof ApiDirectionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
   '/favoritos': typeof FavoritosRoute
@@ -125,12 +174,19 @@ export interface FileRoutesByTo {
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
+  '/admin/biblioteca': typeof AdminBibliotecaRoute
+  '/admin/escola': typeof AdminEscolaRoute
+  '/admin/galeria': typeof AdminGaleriaRoute
+  '/admin/localizacao': typeof AdminLocalizacaoRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
+  '/admin/sala': typeof AdminSalaRoute
+  '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/api/directions': typeof ApiDirectionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
   '/favoritos': typeof FavoritosRoute
@@ -142,6 +198,13 @@ export interface FileRoutesById {
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
+  '/admin/biblioteca': typeof AdminBibliotecaRoute
+  '/admin/escola': typeof AdminEscolaRoute
+  '/admin/galeria': typeof AdminGaleriaRoute
+  '/admin/localizacao': typeof AdminLocalizacaoRoute
+  '/admin/noticias': typeof AdminNoticiasRoute
+  '/admin/sala': typeof AdminSalaRoute
+  '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/api/directions': typeof ApiDirectionsRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +223,13 @@ export interface FileRouteTypes {
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
+    | '/admin/biblioteca'
+    | '/admin/escola'
+    | '/admin/galeria'
+    | '/admin/localizacao'
+    | '/admin/noticias'
+    | '/admin/sala'
+    | '/admin/utilizadores'
     | '/api/directions'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +246,13 @@ export interface FileRouteTypes {
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
+    | '/admin/biblioteca'
+    | '/admin/escola'
+    | '/admin/galeria'
+    | '/admin/localizacao'
+    | '/admin/noticias'
+    | '/admin/sala'
+    | '/admin/utilizadores'
     | '/api/directions'
   id:
     | '__root__'
@@ -192,12 +269,19 @@ export interface FileRouteTypes {
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
+    | '/admin/biblioteca'
+    | '/admin/escola'
+    | '/admin/galeria'
+    | '/admin/localizacao'
+    | '/admin/noticias'
+    | '/admin/sala'
+    | '/admin/utilizadores'
     | '/api/directions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   BibliotecaRoute: typeof BibliotecaRoute
   FavoritosRoute: typeof FavoritosRoute
@@ -312,12 +396,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDirectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/utilizadores': {
+      id: '/admin/utilizadores'
+      path: '/utilizadores'
+      fullPath: '/admin/utilizadores'
+      preLoaderRoute: typeof AdminUtilizadoresRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sala': {
+      id: '/admin/sala'
+      path: '/sala'
+      fullPath: '/admin/sala'
+      preLoaderRoute: typeof AdminSalaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/noticias': {
+      id: '/admin/noticias'
+      path: '/noticias'
+      fullPath: '/admin/noticias'
+      preLoaderRoute: typeof AdminNoticiasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/localizacao': {
+      id: '/admin/localizacao'
+      path: '/localizacao'
+      fullPath: '/admin/localizacao'
+      preLoaderRoute: typeof AdminLocalizacaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/galeria': {
+      id: '/admin/galeria'
+      path: '/galeria'
+      fullPath: '/admin/galeria'
+      preLoaderRoute: typeof AdminGaleriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/escola': {
+      id: '/admin/escola'
+      path: '/escola'
+      fullPath: '/admin/escola'
+      preLoaderRoute: typeof AdminEscolaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/biblioteca': {
+      id: '/admin/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/admin/biblioteca'
+      preLoaderRoute: typeof AdminBibliotecaRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminBibliotecaRoute: typeof AdminBibliotecaRoute
+  AdminEscolaRoute: typeof AdminEscolaRoute
+  AdminGaleriaRoute: typeof AdminGaleriaRoute
+  AdminLocalizacaoRoute: typeof AdminLocalizacaoRoute
+  AdminNoticiasRoute: typeof AdminNoticiasRoute
+  AdminSalaRoute: typeof AdminSalaRoute
+  AdminUtilizadoresRoute: typeof AdminUtilizadoresRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBibliotecaRoute: AdminBibliotecaRoute,
+  AdminEscolaRoute: AdminEscolaRoute,
+  AdminGaleriaRoute: AdminGaleriaRoute,
+  AdminLocalizacaoRoute: AdminLocalizacaoRoute,
+  AdminNoticiasRoute: AdminNoticiasRoute,
+  AdminSalaRoute: AdminSalaRoute,
+  AdminUtilizadoresRoute: AdminUtilizadoresRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   BibliotecaRoute: BibliotecaRoute,
   FavoritosRoute: FavoritosRoute,
