@@ -12,10 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisitarRouteImport } from './routes/visitar'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SalaDoConhecimentoRouteImport } from './routes/sala-do-conhecimento'
+import { Route as PesquisaRouteImport } from './routes/pesquisa'
 import { Route as NoticiasRouteImport } from './routes/noticias'
+import { Route as LocalizacaoRouteImport } from './routes/localizacao'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiDirectionsRouteImport } from './routes/api/directions'
 
 const VisitarRoute = VisitarRouteImport.update({
   id: '/visitar',
@@ -32,9 +36,19 @@ const SalaDoConhecimentoRoute = SalaDoConhecimentoRouteImport.update({
   path: '/sala-do-conhecimento',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PesquisaRoute = PesquisaRouteImport.update({
+  id: '/pesquisa',
+  path: '/pesquisa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoticiasRoute = NoticiasRouteImport.update({
   id: '/noticias',
   path: '/noticias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocalizacaoRoute = LocalizacaoRouteImport.update({
+  id: '/localizacao',
+  path: '/localizacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GaleriaRoute = GaleriaRouteImport.update({
@@ -47,78 +61,116 @@ const BibliotecaRoute = BibliotecaRouteImport.update({
   path: '/biblioteca',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDirectionsRoute = ApiDirectionsRouteImport.update({
+  id: '/api/directions',
+  path: '/api/directions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
   '/galeria': typeof GaleriaRoute
+  '/localizacao': typeof LocalizacaoRoute
   '/noticias': typeof NoticiasRoute
+  '/pesquisa': typeof PesquisaRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
+  '/api/directions': typeof ApiDirectionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
   '/galeria': typeof GaleriaRoute
+  '/localizacao': typeof LocalizacaoRoute
   '/noticias': typeof NoticiasRoute
+  '/pesquisa': typeof PesquisaRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
+  '/api/directions': typeof ApiDirectionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
   '/galeria': typeof GaleriaRoute
+  '/localizacao': typeof LocalizacaoRoute
   '/noticias': typeof NoticiasRoute
+  '/pesquisa': typeof PesquisaRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
+  '/api/directions': typeof ApiDirectionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/biblioteca'
     | '/galeria'
+    | '/localizacao'
     | '/noticias'
+    | '/pesquisa'
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
+    | '/api/directions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/biblioteca'
     | '/galeria'
+    | '/localizacao'
     | '/noticias'
+    | '/pesquisa'
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
+    | '/api/directions'
   id:
     | '__root__'
     | '/'
+    | '/auth'
     | '/biblioteca'
     | '/galeria'
+    | '/localizacao'
     | '/noticias'
+    | '/pesquisa'
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
+    | '/api/directions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   BibliotecaRoute: typeof BibliotecaRoute
   GaleriaRoute: typeof GaleriaRoute
+  LocalizacaoRoute: typeof LocalizacaoRoute
   NoticiasRoute: typeof NoticiasRoute
+  PesquisaRoute: typeof PesquisaRoute
   SalaDoConhecimentoRoute: typeof SalaDoConhecimentoRoute
   SobreRoute: typeof SobreRoute
   VisitarRoute: typeof VisitarRoute
+  ApiDirectionsRoute: typeof ApiDirectionsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,11 +196,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalaDoConhecimentoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pesquisa': {
+      id: '/pesquisa'
+      path: '/pesquisa'
+      fullPath: '/pesquisa'
+      preLoaderRoute: typeof PesquisaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/noticias': {
       id: '/noticias'
       path: '/noticias'
       fullPath: '/noticias'
       preLoaderRoute: typeof NoticiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/localizacao': {
+      id: '/localizacao'
+      path: '/localizacao'
+      fullPath: '/localizacao'
+      preLoaderRoute: typeof LocalizacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/galeria': {
@@ -165,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BibliotecaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -172,17 +245,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/directions': {
+      id: '/api/directions'
+      path: '/api/directions'
+      fullPath: '/api/directions'
+      preLoaderRoute: typeof ApiDirectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   BibliotecaRoute: BibliotecaRoute,
   GaleriaRoute: GaleriaRoute,
+  LocalizacaoRoute: LocalizacaoRoute,
   NoticiasRoute: NoticiasRoute,
+  PesquisaRoute: PesquisaRoute,
   SalaDoConhecimentoRoute: SalaDoConhecimentoRoute,
   SobreRoute: SobreRoute,
   VisitarRoute: VisitarRoute,
+  ApiDirectionsRoute: ApiDirectionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
