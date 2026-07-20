@@ -13,9 +13,11 @@ import { Route as VisitarRouteImport } from './routes/visitar'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SalaDoConhecimentoRouteImport } from './routes/sala-do-conhecimento'
 import { Route as PesquisaRouteImport } from './routes/pesquisa'
+import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as LocalizacaoRouteImport } from './routes/localizacao'
 import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -41,6 +43,11 @@ const PesquisaRoute = PesquisaRouteImport.update({
   path: '/pesquisa',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoticiasRoute = NoticiasRouteImport.update({
   id: '/noticias',
   path: '/noticias',
@@ -54,6 +61,11 @@ const LocalizacaoRoute = LocalizacaoRouteImport.update({
 const GaleriaRoute = GaleriaRouteImport.update({
   id: '/galeria',
   path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BibliotecaRoute = BibliotecaRouteImport.update({
@@ -81,9 +93,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/favoritos': typeof FavoritosRoute
   '/galeria': typeof GaleriaRoute
   '/localizacao': typeof LocalizacaoRoute
   '/noticias': typeof NoticiasRoute
+  '/perfil': typeof PerfilRoute
   '/pesquisa': typeof PesquisaRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
@@ -94,9 +108,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/favoritos': typeof FavoritosRoute
   '/galeria': typeof GaleriaRoute
   '/localizacao': typeof LocalizacaoRoute
   '/noticias': typeof NoticiasRoute
+  '/perfil': typeof PerfilRoute
   '/pesquisa': typeof PesquisaRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
@@ -108,9 +124,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/favoritos': typeof FavoritosRoute
   '/galeria': typeof GaleriaRoute
   '/localizacao': typeof LocalizacaoRoute
   '/noticias': typeof NoticiasRoute
+  '/perfil': typeof PerfilRoute
   '/pesquisa': typeof PesquisaRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
@@ -123,9 +141,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/biblioteca'
+    | '/favoritos'
     | '/galeria'
     | '/localizacao'
     | '/noticias'
+    | '/perfil'
     | '/pesquisa'
     | '/sala-do-conhecimento'
     | '/sobre'
@@ -136,9 +156,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/biblioteca'
+    | '/favoritos'
     | '/galeria'
     | '/localizacao'
     | '/noticias'
+    | '/perfil'
     | '/pesquisa'
     | '/sala-do-conhecimento'
     | '/sobre'
@@ -149,9 +171,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/biblioteca'
+    | '/favoritos'
     | '/galeria'
     | '/localizacao'
     | '/noticias'
+    | '/perfil'
     | '/pesquisa'
     | '/sala-do-conhecimento'
     | '/sobre'
@@ -163,9 +187,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   BibliotecaRoute: typeof BibliotecaRoute
+  FavoritosRoute: typeof FavoritosRoute
   GaleriaRoute: typeof GaleriaRoute
   LocalizacaoRoute: typeof LocalizacaoRoute
   NoticiasRoute: typeof NoticiasRoute
+  PerfilRoute: typeof PerfilRoute
   PesquisaRoute: typeof PesquisaRoute
   SalaDoConhecimentoRoute: typeof SalaDoConhecimentoRoute
   SobreRoute: typeof SobreRoute
@@ -203,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PesquisaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/noticias': {
       id: '/noticias'
       path: '/noticias'
@@ -222,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/galeria'
       fullPath: '/galeria'
       preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/biblioteca': {
@@ -259,9 +299,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   BibliotecaRoute: BibliotecaRoute,
+  FavoritosRoute: FavoritosRoute,
   GaleriaRoute: GaleriaRoute,
   LocalizacaoRoute: LocalizacaoRoute,
   NoticiasRoute: NoticiasRoute,
+  PerfilRoute: PerfilRoute,
   PesquisaRoute: PesquisaRoute,
   SalaDoConhecimentoRoute: SalaDoConhecimentoRoute,
   SobreRoute: SobreRoute,
