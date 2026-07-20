@@ -1,0 +1,13 @@
+{
+  "name": "Biblioteca Digital - Matola Gare",
+  "short_name": "Matola Gare",
+  "description": "Biblioteca Digital da Escola Secundária da Matola Gare",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b6cf0",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ]
+}
