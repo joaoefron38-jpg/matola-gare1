@@ -9,8 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VisitarRouteImport } from './routes/visitar'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as SalaDoConhecimentoRouteImport } from './routes/sala-do-conhecimento'
+import { Route as NoticiasRouteImport } from './routes/noticias'
+import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VisitarRoute = VisitarRouteImport.update({
+  id: '/visitar',
+  path: '/visitar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalaDoConhecimentoRoute = SalaDoConhecimentoRouteImport.update({
+  id: '/sala-do-conhecimento',
+  path: '/sala-do-conhecimento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasRoute = NoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BibliotecaRoute = BibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +55,116 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/galeria': typeof GaleriaRoute
+  '/noticias': typeof NoticiasRoute
+  '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
+  '/sobre': typeof SobreRoute
+  '/visitar': typeof VisitarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/galeria': typeof GaleriaRoute
+  '/noticias': typeof NoticiasRoute
+  '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
+  '/sobre': typeof SobreRoute
+  '/visitar': typeof VisitarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/biblioteca': typeof BibliotecaRoute
+  '/galeria': typeof GaleriaRoute
+  '/noticias': typeof NoticiasRoute
+  '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
+  '/sobre': typeof SobreRoute
+  '/visitar': typeof VisitarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/biblioteca'
+    | '/galeria'
+    | '/noticias'
+    | '/sala-do-conhecimento'
+    | '/sobre'
+    | '/visitar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/biblioteca'
+    | '/galeria'
+    | '/noticias'
+    | '/sala-do-conhecimento'
+    | '/sobre'
+    | '/visitar'
+  id:
+    | '__root__'
+    | '/'
+    | '/biblioteca'
+    | '/galeria'
+    | '/noticias'
+    | '/sala-do-conhecimento'
+    | '/sobre'
+    | '/visitar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BibliotecaRoute: typeof BibliotecaRoute
+  GaleriaRoute: typeof GaleriaRoute
+  NoticiasRoute: typeof NoticiasRoute
+  SalaDoConhecimentoRoute: typeof SalaDoConhecimentoRoute
+  SobreRoute: typeof SobreRoute
+  VisitarRoute: typeof VisitarRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/visitar': {
+      id: '/visitar'
+      path: '/visitar'
+      fullPath: '/visitar'
+      preLoaderRoute: typeof VisitarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sala-do-conhecimento': {
+      id: '/sala-do-conhecimento'
+      path: '/sala-do-conhecimento'
+      fullPath: '/sala-do-conhecimento'
+      preLoaderRoute: typeof SalaDoConhecimentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias': {
+      id: '/noticias'
+      path: '/noticias'
+      fullPath: '/noticias'
+      preLoaderRoute: typeof NoticiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/biblioteca': {
+      id: '/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/biblioteca'
+      preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BibliotecaRoute: BibliotecaRoute,
+  GaleriaRoute: GaleriaRoute,
+  NoticiasRoute: NoticiasRoute,
+  SalaDoConhecimentoRoute: SalaDoConhecimentoRoute,
+  SobreRoute: SobreRoute,
+  VisitarRoute: VisitarRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
