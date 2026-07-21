@@ -19,7 +19,7 @@ const NAV = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin, user, signOut } = useAuth();
-  const { theme, toggle } = useTheme();
+  const { theme, mounted, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const navigate = useNavigate();
