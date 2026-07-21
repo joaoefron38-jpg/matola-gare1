@@ -19,7 +19,7 @@ const NAV = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin, user, signOut } = useAuth();
-  const { theme, toggle } = useTheme();
+  const { theme, mounted, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const navigate = useNavigate();
@@ -77,8 +77,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           <div className="flex items-center gap-1">
             <button onClick={toggle} className="p-2 rounded-full hover:bg-accent" aria-label="Alternar tema">
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {mounted ? (theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />) : <Sun className="w-5 h-5 opacity-0" />}
             </button>
+
             {isAdmin && (
               <Link
                 to="/admin"
