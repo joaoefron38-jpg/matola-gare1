@@ -6,7 +6,7 @@ import { BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, School, Searc
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Biblioteca Digital — Escola Secundária da Matola Gare" },
+      { title: "Escola Secundária da Matola Gare" },
       { name: "description", content: "Plataforma digital escolar: biblioteca, vídeos, galeria, notícias e localização da Escola Secundária da Matola Gare." },
     ],
   }),
