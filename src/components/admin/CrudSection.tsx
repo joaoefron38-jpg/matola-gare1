@@ -3,12 +3,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Trash2, Save, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import { FileUpload } from "./FileUpload";
 
-type Field = {
+export type Field = {
   name: string;
   label: string;
   type?: "text" | "textarea" | "url" | "date" | "checkbox" | "number";
   required?: boolean;
+  upload?: { accept?: string; folder?: string };
 };
 
 export function CrudSection<T extends Record<string, any>>({
