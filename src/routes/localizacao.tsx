@@ -131,7 +131,7 @@ function Localizacao() {
                   {route.steps.map((s, i) => (
                     <li key={i} className="flex gap-2">
                       <span className="text-primary font-medium shrink-0">{i + 1}.</span>
-                      <span dangerouslySetInnerHTML={{ __html: s }} />
+                      <span>{s.replace(/<[^>]*>/g, "")}</span>
                     </li>
                   ))}
                 </ol>
