@@ -122,7 +122,19 @@ function FormPanel({ fields, initial, onCancel, onSave }: { fields: Field[]; ini
             ) : f.type === "checkbox" ? (
               <input type="checkbox" checked={!!row[f.name]} onChange={(e) => setRow({ ...row, [f.name]: e.target.checked })} className="w-5 h-5" />
             ) : (
-              <input type={f.type ?? "text"} value={row[f.name] ?? ""} onChange={(e) => setRow({ ...row, [f.name]: e.target.value })} className="w-full h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" />
+              <div className="space-y-2">
+                <input type={f.type ?? "text"} value={row[f.name] ?? ""} onChange={(e) => setRow({ ...row, [f.name]: e.target.value })} className="w-full h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" placeholder={f.upload ? "Cole um URL ou carregue um ficheiro" : ""} />
+                {f.upload && (
+                  <FileUpload
+                    accept={f.upload.accept}
+                    folder={f.upload.folder ?? f.name}
+                    onUploaded={(url) => setRow({ ...row, [f.name]: url })}
+                  />
+                )}
+                {f.upload && row[f.name] && f.upload.accept?.startsWith("image") && (
+                  <img src={row[f.name]} alt="" className="mt-1 h-24 w-auto rounded-lg object-cover" />
+                )}
+              </div>
             )}
           </label>
         ))}
