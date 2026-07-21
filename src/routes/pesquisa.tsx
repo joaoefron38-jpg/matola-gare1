@@ -22,7 +22,10 @@ function Pesquisa() {
     queryKey: ["search", q],
     queryFn: async () => {
       if (!q) return { library: [], knowledge: [], news: [] };
-      const pattern = `%${q}%`;
+      // Sanitize: strip PostgREST filter meta-characters and cap length to prevent filter injection.
+      const safe = q.slice(0, 100).replace(/[%,.()*\\"']/g, " ").trim();
+      if (!safe) return { library: [], knowledge: [], news: [] };
+      const pattern = `%${safe}%`;
       const [lib, kn, nw] = await Promise.all([
         supabase.from("library_items").select("*").or(`title.ilike.${pattern},description.ilike.${pattern}`).limit(20),
         supabase.from("knowledge_items").select("*").or(`title.ilike.${pattern},description.ilike.${pattern}`).limit(20),
