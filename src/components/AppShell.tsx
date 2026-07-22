@@ -152,6 +152,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="text-sm text-muted-foreground text-center">
             <Link to="/sobre" className="hover:text-foreground">Sobre</Link> ·{" "}
             <Link to="/visitar" className="hover:text-foreground">Visitar a Escola</Link> ·{" "}
+            <Link to="/localizacao" className="hover:text-foreground">Localização</Link> ·{" "}
+            <Link to="/auth" className="hover:text-foreground opacity-70">Administração</Link>
             <Link to="/localizacao" className="hover:text-foreground">Localização</Link>
           </div>
           <div className="text-sm text-muted-foreground md:text-right">
