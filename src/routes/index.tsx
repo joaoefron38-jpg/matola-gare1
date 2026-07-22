@@ -126,7 +126,7 @@ function Index() {
                         {new Date(n.created_at).toLocaleDateString("pt-PT")}
                       </div>
                       <h3 className="font-semibold leading-tight line-clamp-2">{n.title}</h3>
-                      {n.summary && <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{n.summary}</p>}
+                      {n.body && <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{n.body}</p>}
                     </div>
                   </Link>
                 ))}
