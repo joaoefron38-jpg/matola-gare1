@@ -55,13 +55,28 @@ export function ContentCard({ item }: { item: CardAction }) {
 
   const Icon = item.type === "knowledge" ? Play : BookOpen;
 
+  const isVideo = item.type === "knowledge" && !!item.videoLink;
+  const videoEmbed = isVideo ? toEmbedUrl(item.videoLink!) : null;
+  const isDirectVideo = !!item.videoLink && /\.(mp4|webm|ogg)(\?.*)?$/i.test(item.videoLink);
+
   return (
     <article className="surface-card surface-card-hover overflow-hidden flex flex-col animate-fade-up">
-      <div className="aspect-video bg-surface-variant relative overflow-hidden">
-        {item.image ? (
+      <div className="aspect-video bg-black relative overflow-hidden">
+        {isDirectVideo ? (
+          <video src={item.videoLink!} autoPlay muted loop playsInline preload="metadata" poster={item.image ?? undefined} className="w-full h-full object-cover" />
+        ) : videoEmbed ? (
+          <iframe
+            src={videoEmbed}
+            title={item.title}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            loading="lazy"
+            className="w-full h-full"
+          />
+        ) : item.image ? (
           <img src={item.image} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full grid place-items-center text-muted-foreground">
+          <div className="w-full h-full grid place-items-center text-muted-foreground bg-surface-variant">
             <Icon className="w-10 h-10" />
           </div>
         )}
@@ -98,4 +113,24 @@ export function ContentCard({ item }: { item: CardAction }) {
       </div>
     </article>
   );
+}
+
+function toEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    let id: string | null = null;
+    if (host === "youtu.be") id = u.pathname.slice(1);
+    else if (host.endsWith("youtube.com")) {
+      if (u.pathname === "/watch") id = u.searchParams.get("v");
+      else if (u.pathname.startsWith("/embed/")) id = u.pathname.split("/")[2];
+      else if (u.pathname.startsWith("/shorts/")) id = u.pathname.split("/")[2];
+    }
+    if (id) return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=1&modestbranding=1&rel=0&playsinline=1`;
+    if (host.includes("vimeo.com")) {
+      const vid = u.pathname.split("/").filter(Boolean).pop();
+      if (vid) return `https://player.vimeo.com/video/${vid}?autoplay=1&muted=1&loop=1&background=0`;
+    }
+    return null;
+  } catch { return null; }
 }

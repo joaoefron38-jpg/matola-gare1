@@ -5,7 +5,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, Menu, X, Search,
-  Moon, Sun, LogIn, LogOut, LayoutDashboard, User as UserIcon, Heart,
+  Moon, Sun, LogOut, LayoutDashboard,
 } from "lucide-react";
 
 const NAV = [
@@ -88,22 +88,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <LayoutDashboard className="w-4 h-4" /> Painel
               </Link>
             )}
-            {isAuthenticated ? (
-              <div className="hidden md:flex items-center gap-1">
-                <Link to="/perfil" className="p-2 rounded-full hover:bg-accent" aria-label="Perfil">
-                  <UserIcon className="w-5 h-5" />
-                </Link>
-                <button onClick={signOut} className="p-2 rounded-full hover:bg-accent" aria-label="Sair">
-                  <LogOut className="w-5 h-5" />
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/auth"
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground hover:shadow-elevation-2 transition-shadow text-sm font-medium"
-              >
-                <LogIn className="w-4 h-4" /> Entrar
-              </Link>
+            {isAuthenticated && (
+              <button onClick={signOut} className="hidden md:inline-flex p-2 rounded-full hover:bg-accent" aria-label="Sair">
+                <LogOut className="w-5 h-5" />
+              </button>
             )}
           </div>
         </div>
@@ -138,12 +126,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               ))}
               {isAuthenticated && (
                 <>
-                  <Link to="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent">
-                    <UserIcon className="w-5 h-5" /> Perfil
-                  </Link>
-                  <Link to="/favoritos" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent">
-                    <Heart className="w-5 h-5" /> Favoritos
-                  </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent">
                       <LayoutDashboard className="w-5 h-5" /> Painel Admin
@@ -170,7 +152,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="text-sm text-muted-foreground text-center">
             <Link to="/sobre" className="hover:text-foreground">Sobre</Link> ·{" "}
             <Link to="/visitar" className="hover:text-foreground">Visitar a Escola</Link> ·{" "}
-            <Link to="/localizacao" className="hover:text-foreground">Localização</Link>
+            <Link to="/localizacao" className="hover:text-foreground">Localização</Link> ·{" "}
+            <Link to="/auth" className="hover:text-foreground opacity-70">Administração</Link>
           </div>
           <div className="text-sm text-muted-foreground md:text-right">
             Créditos · <span className="font-medium text-foreground">efRon QR</span>
