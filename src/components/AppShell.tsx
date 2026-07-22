@@ -88,22 +88,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <LayoutDashboard className="w-4 h-4" /> Painel
               </Link>
             )}
-            {isAuthenticated ? (
-              <div className="hidden md:flex items-center gap-1">
-                <Link to="/perfil" className="p-2 rounded-full hover:bg-accent" aria-label="Perfil">
-                  <UserIcon className="w-5 h-5" />
-                </Link>
-                <button onClick={signOut} className="p-2 rounded-full hover:bg-accent" aria-label="Sair">
-                  <LogOut className="w-5 h-5" />
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/auth"
-                className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground hover:shadow-elevation-2 transition-shadow text-sm font-medium"
-              >
-                <LogIn className="w-4 h-4" /> Entrar
-              </Link>
+            {isAuthenticated && (
+              <button onClick={signOut} className="hidden md:inline-flex p-2 rounded-full hover:bg-accent" aria-label="Sair">
+                <LogOut className="w-5 h-5" />
+              </button>
             )}
           </div>
         </div>
