@@ -55,13 +55,28 @@ export function ContentCard({ item }: { item: CardAction }) {
 
   const Icon = item.type === "knowledge" ? Play : BookOpen;
 
+  const isVideo = item.type === "knowledge" && !!item.videoLink;
+  const videoEmbed = isVideo ? toEmbedUrl(item.videoLink!) : null;
+  const isDirectVideo = !!item.videoLink && /\.(mp4|webm|ogg)(\?.*)?$/i.test(item.videoLink);
+
   return (
     <article className="surface-card surface-card-hover overflow-hidden flex flex-col animate-fade-up">
-      <div className="aspect-video bg-surface-variant relative overflow-hidden">
-        {item.image ? (
+      <div className="aspect-video bg-black relative overflow-hidden">
+        {isDirectVideo ? (
+          <video src={item.videoLink!} autoPlay muted loop playsInline preload="metadata" poster={item.image ?? undefined} className="w-full h-full object-cover" />
+        ) : videoEmbed ? (
+          <iframe
+            src={videoEmbed}
+            title={item.title}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            loading="lazy"
+            className="w-full h-full"
+          />
+        ) : item.image ? (
           <img src={item.image} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
         ) : (
-          <div className="w-full h-full grid place-items-center text-muted-foreground">
+          <div className="w-full h-full grid place-items-center text-muted-foreground bg-surface-variant">
             <Icon className="w-10 h-10" />
           </div>
         )}
