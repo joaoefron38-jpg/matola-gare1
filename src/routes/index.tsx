@@ -147,7 +147,7 @@ function Index() {
                       description: k.description,
                       image: k.thumbnail_url,
                       videoLink: k.video_url,
-                      pdfLink: k.pdf_url,
+                      pdfLink: k.pdf_link,
                     }}
                   />
                 ))}
@@ -167,9 +167,9 @@ function Index() {
                       title: l.title,
                       description: l.description,
                       image: l.cover_url,
-                      bookLink: l.book_url,
-                      pdfLink: l.pdf_url,
-                      externalLink: l.external_url,
+                      bookLink: l.book_link,
+                      pdfLink: l.pdf_link,
+                      externalLink: l.external_link,
                       allowDownload: l.allow_download,
                     }}
                   />
