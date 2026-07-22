@@ -26,10 +26,17 @@ function Noticias() {
   });
 
   async function share(title: string, body: string) {
-    const url = window.location.href;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const url = `${origin}/noticias`;
+    const summary = body.replace(/\s+/g, " ").trim().slice(0, 180);
+    const shareText = `${title}\n\n${summary}${summary.length === 180 ? "…" : ""}\n\nEscola Secundária da Matola Gare`;
     try {
-      if (navigator.share) await navigator.share({ title, text: body.slice(0, 120), url });
-      else { await navigator.clipboard.writeText(`${title}\n${url}`); toast.success("Link copiado"); }
+      if (navigator.share) {
+        await navigator.share({ title: `${title} — Matola Gare`, text: shareText, url });
+      } else {
+        await navigator.clipboard.writeText(`${shareText}\n${url}`);
+        toast.success("Notícia copiada");
+      }
     } catch {}
   }
 
