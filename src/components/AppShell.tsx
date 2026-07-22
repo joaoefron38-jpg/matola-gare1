@@ -126,12 +126,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               ))}
               {isAuthenticated && (
                 <>
-                  <Link to="/perfil" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent">
-                    <UserIcon className="w-5 h-5" /> Perfil
-                  </Link>
-                  <Link to="/favoritos" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent">
-                    <Heart className="w-5 h-5" /> Favoritos
-                  </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-accent">
                       <LayoutDashboard className="w-5 h-5" /> Painel Admin
