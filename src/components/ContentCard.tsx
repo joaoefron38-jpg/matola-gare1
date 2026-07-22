@@ -114,3 +114,23 @@ export function ContentCard({ item }: { item: CardAction }) {
     </article>
   );
 }
+
+function toEmbedUrl(url: string): string | null {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    let id: string | null = null;
+    if (host === "youtu.be") id = u.pathname.slice(1);
+    else if (host.endsWith("youtube.com")) {
+      if (u.pathname === "/watch") id = u.searchParams.get("v");
+      else if (u.pathname.startsWith("/embed/")) id = u.pathname.split("/")[2];
+      else if (u.pathname.startsWith("/shorts/")) id = u.pathname.split("/")[2];
+    }
+    if (id) return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=1&modestbranding=1&rel=0&playsinline=1`;
+    if (host.includes("vimeo.com")) {
+      const vid = u.pathname.split("/").filter(Boolean).pop();
+      if (vid) return `https://player.vimeo.com/video/${vid}?autoplay=1&muted=1&loop=1&background=0`;
+    }
+    return null;
+  } catch { return null; }
+}
