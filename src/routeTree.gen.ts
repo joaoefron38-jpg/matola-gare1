@@ -29,6 +29,7 @@ import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
 import { Route as AdminLocalizacaoRouteImport } from './routes/admin.localizacao'
 import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
 import { Route as AdminEscolaRouteImport } from './routes/admin.escola'
+import { Route as AdminChatRouteImport } from './routes/admin.chat'
 import { Route as AdminBibliotecaRouteImport } from './routes/admin.biblioteca'
 
 const VisitarRoute = VisitarRouteImport.update({
@@ -131,6 +132,11 @@ const AdminEscolaRoute = AdminEscolaRouteImport.update({
   path: '/escola',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminChatRoute = AdminChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBibliotecaRoute = AdminBibliotecaRouteImport.update({
   id: '/biblioteca',
   path: '/biblioteca',
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
   '/admin/biblioteca': typeof AdminBibliotecaRoute
+  '/admin/chat': typeof AdminChatRoute
   '/admin/escola': typeof AdminEscolaRoute
   '/admin/galeria': typeof AdminGaleriaRoute
   '/admin/localizacao': typeof AdminLocalizacaoRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
   '/admin/biblioteca': typeof AdminBibliotecaRoute
+  '/admin/chat': typeof AdminChatRoute
   '/admin/escola': typeof AdminEscolaRoute
   '/admin/galeria': typeof AdminGaleriaRoute
   '/admin/localizacao': typeof AdminLocalizacaoRoute
@@ -199,6 +207,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
   '/admin/biblioteca': typeof AdminBibliotecaRoute
+  '/admin/chat': typeof AdminChatRoute
   '/admin/escola': typeof AdminEscolaRoute
   '/admin/galeria': typeof AdminGaleriaRoute
   '/admin/localizacao': typeof AdminLocalizacaoRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/visitar'
     | '/admin/biblioteca'
+    | '/admin/chat'
     | '/admin/escola'
     | '/admin/galeria'
     | '/admin/localizacao'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/visitar'
     | '/admin/biblioteca'
+    | '/admin/chat'
     | '/admin/escola'
     | '/admin/galeria'
     | '/admin/localizacao'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/visitar'
     | '/admin/biblioteca'
+    | '/admin/chat'
     | '/admin/escola'
     | '/admin/galeria'
     | '/admin/localizacao'
@@ -438,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEscolaRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/chat': {
+      id: '/admin/chat'
+      path: '/chat'
+      fullPath: '/admin/chat'
+      preLoaderRoute: typeof AdminChatRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/biblioteca': {
       id: '/admin/biblioteca'
       path: '/biblioteca'
@@ -450,6 +469,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminBibliotecaRoute: typeof AdminBibliotecaRoute
+  AdminChatRoute: typeof AdminChatRoute
   AdminEscolaRoute: typeof AdminEscolaRoute
   AdminGaleriaRoute: typeof AdminGaleriaRoute
   AdminLocalizacaoRoute: typeof AdminLocalizacaoRoute
@@ -460,6 +480,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBibliotecaRoute: AdminBibliotecaRoute,
+  AdminChatRoute: AdminChatRoute,
   AdminEscolaRoute: AdminEscolaRoute,
   AdminGaleriaRoute: AdminGaleriaRoute,
   AdminLocalizacaoRoute: AdminLocalizacaoRoute,
