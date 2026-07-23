@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Save } from "lucide-react";
+import { FileUpload } from "@/components/admin/FileUpload";
+import { Save, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/escola")({ component: EscolaAdmin });
@@ -45,6 +46,30 @@ function EscolaAdmin() {
   return (
     <div className="animate-fade-up space-y-4">
       <h2 className="text-xl font-semibold">Informações da Escola</h2>
+
+      <div className="surface-card p-5 space-y-3">
+        <div className="text-sm font-medium flex items-center gap-2"><ImageIcon className="w-4 h-4" /> Logo da plataforma</div>
+        <div className="flex items-center gap-4 flex-wrap">
+          {form.logo_url ? (
+            <img src={form.logo_url} alt="Logo" className="w-20 h-20 rounded-2xl object-contain bg-surface-variant p-2" />
+          ) : (
+            <div className="w-20 h-20 rounded-2xl bg-primary text-primary-foreground grid place-items-center font-bold text-2xl">MG</div>
+          )}
+          <div className="flex-1 min-w-64 space-y-2">
+            <input
+              value={form.logo_url ?? ""}
+              onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
+              placeholder="URL do logo (ou carregue um ficheiro)"
+              className="w-full h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary"
+            />
+            <FileUpload accept="image/*" folder="logos" onUploaded={(url) => setForm((f: any) => ({ ...f, logo_url: url }))} />
+            {form.logo_url && (
+              <button type="button" onClick={() => setForm({ ...form, logo_url: "" })} className="text-xs text-destructive hover:underline">Remover logo</button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="surface-card p-5 grid gap-3 md:grid-cols-2">
         {FIELDS.map((f) => (
           <label key={f.key} className={`text-sm ${f.area ? "md:col-span-2" : ""}`}>

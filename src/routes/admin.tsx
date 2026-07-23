@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { LayoutDashboard, FileText, Users, MapPin, Info, Images, GraduationCap, BookOpen, Newspaper, Circle } from "lucide-react";
+import { LayoutDashboard, FileText, Users, MapPin, Info, Images, GraduationCap, BookOpen, Newspaper, Circle, MessageSquare } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Painel — Matola Gare" }, { name: "robots", content: "noindex" }] }),
@@ -13,6 +13,7 @@ export const Route = createFileRoute("/admin")({
 
 const TABS = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/chat", label: "Chat Admin", icon: MessageSquare },
   { to: "/admin/biblioteca", label: "Biblioteca", icon: BookOpen },
   { to: "/admin/sala", label: "Sala", icon: GraduationCap },
   { to: "/admin/galeria", label: "Galeria", icon: Images },
