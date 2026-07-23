@@ -22,7 +22,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { theme, mounted, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [schoolName, setSchoolName] = useState<string>("Matola Gare");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let cancelled = false;
+    supabase.from("school_info").select("logo_url,name").eq("id", 1).maybeSingle().then(({ data }) => {
+      if (cancelled || !data) return;
+      if (data.logo_url) setLogoUrl(data.logo_url);
+      if (data.name) setSchoolName(data.name);
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   // Presence heartbeat
   useEffect(() => {
@@ -51,10 +63,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-primary text-primary-foreground grid place-items-center font-bold shadow-elevation-1">
-              MG
-            </div>
-            <span className="hidden sm:block font-semibold tracking-tight">Matola Gare</span>
+            {logoUrl ? (
+              <img src={logoUrl} alt={schoolName} className="w-9 h-9 rounded-xl object-contain bg-surface-variant" />
+            ) : (
+              <div className="w-9 h-9 rounded-xl bg-primary text-primary-foreground grid place-items-center font-bold shadow-elevation-1">
+                MG
+              </div>
+            )}
+            <span className="hidden sm:block font-semibold tracking-tight">{schoolName}</span>
           </Link>
 
           <form
