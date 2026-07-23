@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_messages: {
+        Row: {
+          audio_url: string | null
+          content: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -244,6 +274,7 @@ export type Database = {
           instagram: string | null
           intro_video_url: string | null
           latitude: number | null
+          logo_url: string | null
           longitude: number | null
           mission: string | null
           name: string | null
@@ -266,6 +297,7 @@ export type Database = {
           instagram?: string | null
           intro_video_url?: string | null
           latitude?: number | null
+          logo_url?: string | null
           longitude?: number | null
           mission?: string | null
           name?: string | null
@@ -288,6 +320,7 @@ export type Database = {
           instagram?: string | null
           intro_video_url?: string | null
           latitude?: number | null
+          logo_url?: string | null
           longitude?: number | null
           mission?: string | null
           name?: string | null
