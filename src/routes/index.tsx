@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Escola Secundária da Matola Gare" },
-      { name: "description", content: "Plataforma digital escolar: biblioteca, vídeos, galeria, notícias e localização da Escola Secundária da Matola Gare." },
+      { name: "description", content: "Plataforma digital escolar: biblioteca, vídeos, galeria, notícias e localização da Escola Secundária da Matola Gare *#efRon" },
     ],
   }),
   component: Index,
