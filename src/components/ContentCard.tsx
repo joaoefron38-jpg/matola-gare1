@@ -22,8 +22,8 @@ export type CardAction = {
 export function ContentCard({ item }: { item: CardAction }) {
   const { user } = useAuth();
   const [fav, setFav] = useState(false);
-  const primaryLink =
-    item.videoLink || item.bookLink || item.externalLink || item.pdfLink || undefined;
+  const shareUrl = `/ver/${item.type}/${item.id}`;
+
 
   async function toggleFav() {
     if (!user) {
@@ -48,7 +48,8 @@ export function ContentCard({ item }: { item: CardAction }) {
   }
 
   async function share() {
-    const url = primaryLink || window.location.href;
+    const url = `${window.location.origin}${shareUrl}`;
+
     try {
       if (navigator.share) await navigator.share({ title: item.title, text: item.description ?? "", url });
       else { await navigator.clipboard.writeText(url); toast.success("Link copiado"); }
