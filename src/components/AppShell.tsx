@@ -5,10 +5,11 @@ import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, Menu, X, Search,
-  Moon, Sun, LogOut, LayoutDashboard,
+  Moon, Sun, LogOut, LayoutDashboard, LayoutGrid,
 } from "lucide-react";
 
 const NAV = [
+  { to: "/publicacoes", label: "Publicações", icon: LayoutGrid },
   { to: "/biblioteca", label: "Biblioteca", icon: BookOpen },
   { to: "/sala-do-conhecimento", label: "Sala do Conhecimento", icon: GraduationCap },
   { to: "/galeria", label: "Galeria", icon: Images },
@@ -16,6 +17,7 @@ const NAV = [
   { to: "/localizacao", label: "Localização", icon: MapPin },
   { to: "/sobre", label: "Sobre", icon: Info },
 ] as const;
+
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin, user, signOut } = useAuth();

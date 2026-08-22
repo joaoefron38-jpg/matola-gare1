@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Share2, Heart, Download, ExternalLink, FileText, BookOpen, Play } from "lucide-react";
+import { Share2, Heart, Download, ExternalLink, BookOpen, Play } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+
 
 export type CardAction = {
   type: "library" | "knowledge";
@@ -20,8 +22,8 @@ export type CardAction = {
 export function ContentCard({ item }: { item: CardAction }) {
   const { user } = useAuth();
   const [fav, setFav] = useState(false);
-  const primaryLink =
-    item.videoLink || item.bookLink || item.externalLink || item.pdfLink || undefined;
+  const shareUrl = `/ver/${item.type}/${item.id}`;
+
 
   async function toggleFav() {
     if (!user) {
@@ -46,7 +48,8 @@ export function ContentCard({ item }: { item: CardAction }) {
   }
 
   async function share() {
-    const url = primaryLink || window.location.href;
+    const url = `${window.location.origin}${shareUrl}`;
+
     try {
       if (navigator.share) await navigator.share({ title: item.title, text: item.description ?? "", url });
       else { await navigator.clipboard.writeText(url); toast.success("Link copiado"); }
@@ -85,17 +88,15 @@ export function ContentCard({ item }: { item: CardAction }) {
         <h3 className="font-semibold leading-tight line-clamp-2">{item.title}</h3>
         {item.description && <p className="text-sm text-muted-foreground line-clamp-3">{item.description}</p>}
         <div className="mt-auto pt-3 flex flex-wrap gap-2">
-          {primaryLink && (
-            <a
-              href={primaryLink} target="_blank" rel="noreferrer" onClick={logView}
-              className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:shadow-elevation-2 transition-shadow"
-            >
-              {item.type === "knowledge" ? <><Play className="w-4 h-4" /> Assistir</> : <><ExternalLink className="w-4 h-4" /> Abrir</>}
-            </a>
-          )}
-          {item.pdfLink && item.type === "library" && (
-            <a href={item.pdfLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-secondary text-secondary-foreground text-sm hover:shadow-elevation-1">
-              <FileText className="w-4 h-4" /> PDF
+          <Link
+            to="/ver/$type/$id" params={{ type: item.type, id: item.id }} onClick={logView}
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:shadow-elevation-2 transition-shadow"
+          >
+            {item.type === "knowledge" ? <><Play className="w-4 h-4" /> Assistir</> : <><BookOpen className="w-4 h-4" /> Ler aqui</>}
+          </Link>
+          {item.externalLink && (
+            <a href={item.externalLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-secondary text-secondary-foreground text-sm hover:shadow-elevation-1">
+              <ExternalLink className="w-4 h-4" /> Link
             </a>
           )}
           {item.allowDownload && (item.pdfLink || item.bookLink) && (
@@ -103,6 +104,7 @@ export function ContentCard({ item }: { item: CardAction }) {
               <Download className="w-4 h-4" /> Baixar
             </a>
           )}
+
           <button onClick={share} className="ml-auto p-2 rounded-full hover:bg-accent" aria-label="Compartilhar">
             <Share2 className="w-4 h-4" />
           </button>

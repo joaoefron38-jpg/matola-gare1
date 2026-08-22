@@ -76,35 +76,35 @@ export function CrudSection<T extends Record<string, any>>({
         <FormPanel fields={fields} initial={editing ?? {}} onCancel={() => { setEditing(null); setCreating(false); }} onSave={save} />
       )}
 
-      <div className="mt-4 surface-card overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-surface-variant">
-            <tr>
-              {fields.slice(0, 3).map((f) => <th key={f.name} className="text-left px-4 py-2 font-medium">{f.label}</th>)}
-              <th className="w-32"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {!data || data.length === 0 ? (
-              <tr><td colSpan={fields.length + 1} className="text-center py-8 text-muted-foreground">Sem registos.</td></tr>
-            ) : (
-              data.map((row) => (
-                <tr key={row.id} className="border-t border-border hover:bg-accent/50">
-                  {fields.slice(0, 3).map((f) => (
-                    <td key={f.name} className="px-4 py-2 max-w-xs truncate">
-                      {f.type === "checkbox" ? (row[f.name] ? "Sim" : "Não") : String(row[f.name] ?? "—")}
-                    </td>
-                  ))}
-                  <td className="px-4 py-2 text-right">
-                    <button onClick={() => { setEditing(row); setCreating(false); }} className="p-2 rounded-full hover:bg-accent" aria-label="Editar"><Pencil className="w-4 h-4" /></button>
-                    <button onClick={() => del(row.id)} className="p-2 rounded-full hover:bg-destructive/10 text-destructive" aria-label="Eliminar"><Trash2 className="w-4 h-4" /></button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className="mt-4 space-y-3">
+        {!data || data.length === 0 ? (
+          <div className="surface-card py-8 text-center text-muted-foreground">Sem registos.</div>
+        ) : (
+          data.map((row) => (
+            <div key={row.id} className="surface-card p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="min-w-0 flex-1 space-y-1">
+                {fields.slice(0, 3).map((f, i) => {
+                  const value = f.type === "checkbox" ? (row[f.name] ? "Sim" : "Não") : String(row[f.name] ?? "—");
+                  return (
+                    <div key={f.name} className={i === 0 ? "font-medium break-words" : "text-sm text-muted-foreground line-clamp-2 break-words"}>
+                      {i === 0 ? value : `${f.label}: ${value}`}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button onClick={() => { setEditing(row); setCreating(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-secondary text-secondary-foreground text-sm">
+                  <Pencil className="w-4 h-4" /> Editar
+                </button>
+                <button onClick={() => del(row.id)} className="inline-flex items-center gap-1.5 h-10 px-4 rounded-full bg-destructive/10 text-destructive text-sm">
+                  <Trash2 className="w-4 h-4" /> Apagar
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
+
     </div>
   );
 }

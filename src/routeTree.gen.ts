@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisitarRouteImport } from './routes/visitar'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SalaDoConhecimentoRouteImport } from './routes/sala-do-conhecimento'
+import { Route as PublicacoesRouteImport } from './routes/publicacoes'
 import { Route as PesquisaRouteImport } from './routes/pesquisa'
 import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as NoticiasRouteImport } from './routes/noticias'
@@ -31,6 +32,7 @@ import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
 import { Route as AdminEscolaRouteImport } from './routes/admin.escola'
 import { Route as AdminChatRouteImport } from './routes/admin.chat'
 import { Route as AdminBibliotecaRouteImport } from './routes/admin.biblioteca'
+import { Route as VerTypeIdRouteImport } from './routes/ver.$type.$id'
 
 const VisitarRoute = VisitarRouteImport.update({
   id: '/visitar',
@@ -45,6 +47,11 @@ const SobreRoute = SobreRouteImport.update({
 const SalaDoConhecimentoRoute = SalaDoConhecimentoRouteImport.update({
   id: '/sala-do-conhecimento',
   path: '/sala-do-conhecimento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicacoesRoute = PublicacoesRouteImport.update({
+  id: '/publicacoes',
+  path: '/publicacoes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PesquisaRoute = PesquisaRouteImport.update({
@@ -142,6 +149,11 @@ const AdminBibliotecaRoute = AdminBibliotecaRouteImport.update({
   path: '/biblioteca',
   getParentRoute: () => AdminRoute,
 } as any)
+const VerTypeIdRoute = VerTypeIdRouteImport.update({
+  id: '/ver/$type/$id',
+  path: '/ver/$type/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -154,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/noticias': typeof NoticiasRoute
   '/perfil': typeof PerfilRoute
   '/pesquisa': typeof PesquisaRoute
+  '/publicacoes': typeof PublicacoesRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
@@ -166,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/admin/sala': typeof AdminSalaRoute
   '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/api/directions': typeof ApiDirectionsRoute
+  '/ver/$type/$id': typeof VerTypeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -178,6 +192,7 @@ export interface FileRoutesByTo {
   '/noticias': typeof NoticiasRoute
   '/perfil': typeof PerfilRoute
   '/pesquisa': typeof PesquisaRoute
+  '/publicacoes': typeof PublicacoesRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
@@ -190,6 +205,7 @@ export interface FileRoutesByTo {
   '/admin/sala': typeof AdminSalaRoute
   '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/api/directions': typeof ApiDirectionsRoute
+  '/ver/$type/$id': typeof VerTypeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -203,6 +219,7 @@ export interface FileRoutesById {
   '/noticias': typeof NoticiasRoute
   '/perfil': typeof PerfilRoute
   '/pesquisa': typeof PesquisaRoute
+  '/publicacoes': typeof PublicacoesRoute
   '/sala-do-conhecimento': typeof SalaDoConhecimentoRoute
   '/sobre': typeof SobreRoute
   '/visitar': typeof VisitarRoute
@@ -215,6 +232,7 @@ export interface FileRoutesById {
   '/admin/sala': typeof AdminSalaRoute
   '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/api/directions': typeof ApiDirectionsRoute
+  '/ver/$type/$id': typeof VerTypeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -229,6 +247,7 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/perfil'
     | '/pesquisa'
+    | '/publicacoes'
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
@@ -241,6 +260,7 @@ export interface FileRouteTypes {
     | '/admin/sala'
     | '/admin/utilizadores'
     | '/api/directions'
+    | '/ver/$type/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -253,6 +273,7 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/perfil'
     | '/pesquisa'
+    | '/publicacoes'
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
@@ -265,6 +286,7 @@ export interface FileRouteTypes {
     | '/admin/sala'
     | '/admin/utilizadores'
     | '/api/directions'
+    | '/ver/$type/$id'
   id:
     | '__root__'
     | '/'
@@ -277,6 +299,7 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/perfil'
     | '/pesquisa'
+    | '/publicacoes'
     | '/sala-do-conhecimento'
     | '/sobre'
     | '/visitar'
@@ -289,6 +312,7 @@ export interface FileRouteTypes {
     | '/admin/sala'
     | '/admin/utilizadores'
     | '/api/directions'
+    | '/ver/$type/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -302,10 +326,12 @@ export interface RootRouteChildren {
   NoticiasRoute: typeof NoticiasRoute
   PerfilRoute: typeof PerfilRoute
   PesquisaRoute: typeof PesquisaRoute
+  PublicacoesRoute: typeof PublicacoesRoute
   SalaDoConhecimentoRoute: typeof SalaDoConhecimentoRoute
   SobreRoute: typeof SobreRoute
   VisitarRoute: typeof VisitarRoute
   ApiDirectionsRoute: typeof ApiDirectionsRoute
+  VerTypeIdRoute: typeof VerTypeIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -329,6 +355,13 @@ declare module '@tanstack/react-router' {
       path: '/sala-do-conhecimento'
       fullPath: '/sala-do-conhecimento'
       preLoaderRoute: typeof SalaDoConhecimentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publicacoes': {
+      id: '/publicacoes'
+      path: '/publicacoes'
+      fullPath: '/publicacoes'
+      preLoaderRoute: typeof PublicacoesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pesquisa': {
@@ -464,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBibliotecaRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/ver/$type/$id': {
+      id: '/ver/$type/$id'
+      path: '/ver/$type/$id'
+      fullPath: '/ver/$type/$id'
+      preLoaderRoute: typeof VerTypeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -502,11 +542,23 @@ const rootRouteChildren: RootRouteChildren = {
   NoticiasRoute: NoticiasRoute,
   PerfilRoute: PerfilRoute,
   PesquisaRoute: PesquisaRoute,
+  PublicacoesRoute: PublicacoesRoute,
   SalaDoConhecimentoRoute: SalaDoConhecimentoRoute,
   SobreRoute: SobreRoute,
   VisitarRoute: VisitarRoute,
   ApiDirectionsRoute: ApiDirectionsRoute,
+  VerTypeIdRoute: VerTypeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
