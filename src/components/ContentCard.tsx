@@ -4,6 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Share2, Heart, Download, BookOpen, Play } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { downloadFile } from "@/lib/download";
+
 
 
 export type CardAction = {
@@ -95,10 +97,14 @@ export function ContentCard({ item }: { item: CardAction }) {
             {item.type === "knowledge" ? <><Play className="w-4 h-4" /> Assistir</> : <><BookOpen className="w-4 h-4" /> Ler aqui</>}
           </Link>
           {item.allowDownload && (item.pdfLink || item.bookLink) && (
-            <a href={item.pdfLink || item.bookLink!} download className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-surface-variant text-sm hover:shadow-elevation-1">
+            <button
+              onClick={() => downloadFile((item.pdfLink || item.bookLink)!, item.title)}
+              className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-surface-variant text-sm hover:shadow-elevation-1"
+            >
               <Download className="w-4 h-4" /> Baixar
-            </a>
+            </button>
           )}
+
 
           <button onClick={share} className="ml-auto p-2 rounded-full hover:bg-accent" aria-label="Compartilhar">
             <Share2 className="w-4 h-4" />

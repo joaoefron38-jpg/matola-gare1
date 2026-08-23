@@ -5,6 +5,8 @@ import { AppShell, EmptyState } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, FileQuestion, Share2, Download, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
+import { downloadFile } from "@/lib/download";
+
 
 const TABLES: Record<string, string> = {
   library: "library_items",
@@ -142,10 +144,11 @@ function Viewer() {
 
 
             {data.allow_download && fileUrl && (
-              <a href={fileUrl} download className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground text-sm">
+              <button onClick={() => downloadFile(fileUrl, title)} className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground text-sm">
                 <Download className="w-4 h-4" /> Baixar
-              </a>
+              </button>
             )}
+
           </article>
         )}
       </div>
