@@ -49,13 +49,36 @@ export function ContentCard({ item }: { item: CardAction }) {
     });
   }
 
-  async function share() {
+  async function share(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
     const url = `${window.location.origin}${shareUrl}`;
+    const shareData: ShareData = {
+      title: item.title || "Matola Gare",
+      text: item.description ? `${item.title} — ${item.description}` : item.title,
+      url,
+    };
 
     try {
-      if (navigator.share) await navigator.share({ title: item.title, text: item.description ?? "", url });
-      else { await navigator.clipboard.writeText(url); toast.success("Link copiado"); }
-    } catch { /* cancelled */ }
+      if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+        await navigator.share(shareData);
+        toast.success("Partilha aberta");
+      } else {
+        await navigator.clipboard.writeText(`${shareData.title}\n${url}`);
+        toast.success("Link copiado para a área de transferência");
+      }
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        // utilizador cancelou — não mostrar erro
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copiado para a área de transferência");
+      } catch {
+        toast.error("Não foi possível partilhar. Copie o link manualmente.");
+      }
+    }
   }
 
   const Icon = item.type === "knowledge" ? Play : BookOpen;
@@ -106,7 +129,7 @@ export function ContentCard({ item }: { item: CardAction }) {
           )}
 
 
-          <button onClick={share} className="ml-auto p-2 rounded-full hover:bg-accent" aria-label="Compartilhar">
+          <button onClick={(e) => share(e)} className="ml-auto p-2 rounded-full hover:bg-accent" aria-label="Compartilhar">
             <Share2 className="w-4 h-4" />
           </button>
           <button onClick={toggleFav} className="p-2 rounded-full hover:bg-accent" aria-label="Favoritar">
