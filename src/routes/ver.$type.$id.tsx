@@ -100,11 +100,21 @@ function Viewer() {
               )}
             </header>
 
-            {isDirectVideo ? (
-              <video src={videoUrl} controls playsInline poster={data.thumbnail_url ?? undefined} className="w-full rounded-2xl bg-black aspect-video" />
-            ) : videoUrl ? (
-              <iframe src={toEmbed(videoUrl) ?? videoUrl} title={title} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="w-full aspect-video rounded-2xl bg-black" />
-            ) : null}
+            {(isDirectVideo || videoUrl) && (
+              <div ref={mediaRef} className="relative rounded-2xl overflow-hidden bg-black">
+                {isDirectVideo ? (
+                  <video src={videoUrl} controls playsInline poster={data.thumbnail_url ?? undefined} className="w-full bg-black aspect-video" />
+                ) : (
+                  <iframe src={toEmbed(videoUrl!) ?? videoUrl} title={title} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen className="w-full aspect-video bg-black" />
+                )}
+                <button
+                  onClick={() => toggleFullscreen(mediaRef.current)}
+                  className="absolute top-2 right-2 inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-surface/90 text-sm shadow-elevation-1"
+                >
+                  <Maximize2 className="w-4 h-4" /> Ecrã inteiro
+                </button>
+              </div>
+            )}
 
             {imageUrl && (
               <img src={imageUrl} alt={title} className="w-full rounded-2xl object-contain bg-surface-variant" />
@@ -114,11 +124,21 @@ function Viewer() {
               <div className="surface-card p-5 whitespace-pre-wrap leading-relaxed">{data.body}</div>
             )}
 
-            {fileUrl && (
-              <div className="surface-card overflow-hidden">
-                <iframe src={fileUrl} title={`Documento: ${title}`} className="w-full h-[75vh] bg-surface-variant" />
+            {docSrc && (
+              <div ref={docRef} className="surface-card overflow-hidden relative bg-surface-variant">
+                <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-border">
+                  <span className="text-sm text-muted-foreground truncate">Documento</span>
+                  <button
+                    onClick={() => toggleFullscreen(docRef.current)}
+                    className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-surface text-sm shadow-elevation-1 shrink-0"
+                  >
+                    <Maximize2 className="w-4 h-4" /> Ecrã inteiro
+                  </button>
+                </div>
+                <iframe src={docSrc} title={`Documento: ${title}`} allowFullScreen className="w-full h-[75vh] bg-surface-variant" />
               </div>
             )}
+
 
             {data.allow_download && fileUrl && (
               <a href={fileUrl} download className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground text-sm">
