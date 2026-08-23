@@ -129,7 +129,7 @@ export function ContentCard({ item }: { item: CardAction }) {
           )}
 
 
-          <button onClick={share} className="ml-auto p-2 rounded-full hover:bg-accent" aria-label="Compartilhar">
+          <button onClick={(e) => share(e)} className="ml-auto p-2 rounded-full hover:bg-accent" aria-label="Compartilhar">
             <Share2 className="w-4 h-4" />
           </button>
           <button onClick={toggleFav} className="p-2 rounded-full hover:bg-accent" aria-label="Favoritar">
