@@ -6,7 +6,7 @@ function guessName(url: string, title: string) {
     const last = decodeURIComponent(path.split("/").filter(Boolean).pop() ?? "");
     if (last && /\.[a-z0-9]{2,5}$/i.test(last)) return last;
     const ext = last.match(/\.[a-z0-9]{2,5}$/i)?.[0] ?? "";
-    return `${title.replace(/[^\p{L}\p{N}\s-_]/gu, "").trim() || "documento"}${ext}`;
+    return `${title.replace(/[^\p{L}\p{N}\s_-]/gu, "").trim() || "documento"}${ext}`;
   } catch {
     return "documento";
   }
