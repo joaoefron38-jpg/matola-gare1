@@ -1,8 +1,9 @@
+import { useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, FileQuestion, Share2, Download } from "lucide-react";
+import { ArrowLeft, FileQuestion, Share2, Download, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
 
 const TABLES: Record<string, string> = {
@@ -169,4 +170,17 @@ function toEmbed(url: string): string | null {
     }
     return null;
   } catch { return null; }
+}
+
+function docEmbedSrc(url: string): string {
+  const isPdf = /\.pdf(\?.*)?$/i.test(url) || /\/storage\/v1\/object\//.test(url);
+  const isOffice = /\.(docx?|xlsx?|pptx?)(\?.*)?$/i.test(url);
+  if (isOffice) return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+  if (isPdf) {
+    const mobile = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    // telemoveis nao renderizam PDF em iframe: usa visualizador embutido
+    if (mobile) return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`;
+    return `${url}${url.includes("#") ? "" : "#toolbar=0&navpanes=0&view=FitH"}`;
+  }
+  return url;
 }
