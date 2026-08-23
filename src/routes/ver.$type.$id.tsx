@@ -1,8 +1,9 @@
+import { useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell, EmptyState } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, FileQuestion, Share2, Download } from "lucide-react";
+import { ArrowLeft, FileQuestion, Share2, Download, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
 
 const TABLES: Record<string, string> = {
@@ -34,6 +35,8 @@ function inlineUrl(url: string) {
 function Viewer() {
   const { type, id } = Route.useParams();
   const table = TABLES[type];
+  const docRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["viewer", type, id],
@@ -52,6 +55,18 @@ function Viewer() {
   const videoUrl: string | undefined = data?.video_url ? inlineUrl(data.video_url) : undefined;
   const imageUrl: string | undefined = data?.image_url ? inlineUrl(data.image_url) : undefined;
   const isDirectVideo = !!videoUrl && /\.(mp4|webm|ogg)(\?.*)?$/i.test(videoUrl);
+  const docSrc = fileUrl ? docEmbedSrc(fileUrl) : undefined;
+
+  async function toggleFullscreen(el: HTMLElement | null) {
+    if (!el) return;
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await el.requestFullscreen();
+    } catch {
+      toast.error("Ecrã inteiro não suportado neste dispositivo");
+    }
+  }
+
 
   async function share() {
     const url = window.location.href;
@@ -86,11 +101,21 @@ function Viewer() {
               )}
             </header>
 
-            {isDirectVideo ? (
-              <video src={videoUrl} controls playsInline poster={data.thumbnail_url ?? undefined} className="w-full rounded-2xl bg-black aspect-video" />
-            ) : videoUrl ? (
-              <iframe src={toEmbed(videoUrl) ?? videoUrl} title={title} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="w-full aspect-video rounded-2xl bg-black" />
-            ) : null}
+            {(isDirectVideo || videoUrl) && (
+              <div ref={mediaRef} className="relative rounded-2xl overflow-hidden bg-black">
+                {isDirectVideo ? (
+                  <video src={videoUrl} controls playsInline poster={data.thumbnail_url ?? undefined} className="w-full bg-black aspect-video" />
+                ) : (
+                  <iframe src={toEmbed(videoUrl!) ?? videoUrl} title={title} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen className="w-full aspect-video bg-black" />
+                )}
+                <button
+                  onClick={() => toggleFullscreen(mediaRef.current)}
+                  className="absolute top-2 right-2 inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-surface/90 text-sm shadow-elevation-1"
+                >
+                  <Maximize2 className="w-4 h-4" /> Ecrã inteiro
+                </button>
+              </div>
+            )}
 
             {imageUrl && (
               <img src={imageUrl} alt={title} className="w-full rounded-2xl object-contain bg-surface-variant" />
@@ -100,11 +125,21 @@ function Viewer() {
               <div className="surface-card p-5 whitespace-pre-wrap leading-relaxed">{data.body}</div>
             )}
 
-            {fileUrl && (
-              <div className="surface-card overflow-hidden">
-                <iframe src={fileUrl} title={`Documento: ${title}`} className="w-full h-[75vh] bg-surface-variant" />
+            {docSrc && (
+              <div ref={docRef} className="surface-card overflow-hidden relative bg-surface-variant">
+                <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-border">
+                  <span className="text-sm text-muted-foreground truncate">Documento</span>
+                  <button
+                    onClick={() => toggleFullscreen(docRef.current)}
+                    className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-surface text-sm shadow-elevation-1 shrink-0"
+                  >
+                    <Maximize2 className="w-4 h-4" /> Ecrã inteiro
+                  </button>
+                </div>
+                <iframe src={docSrc} title={`Documento: ${title}`} allowFullScreen className="w-full h-[75vh] bg-surface-variant" />
               </div>
             )}
+
 
             {data.allow_download && fileUrl && (
               <a href={fileUrl} download className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground text-sm">
@@ -135,4 +170,17 @@ function toEmbed(url: string): string | null {
     }
     return null;
   } catch { return null; }
+}
+
+function docEmbedSrc(url: string): string {
+  const isPdf = /\.pdf(\?.*)?$/i.test(url) || /\/storage\/v1\/object\//.test(url);
+  const isOffice = /\.(docx?|xlsx?|pptx?)(\?.*)?$/i.test(url);
+  if (isOffice) return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+  if (isPdf) {
+    const mobile = typeof navigator !== "undefined" && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    // telemoveis nao renderizam PDF em iframe: usa visualizador embutido
+    if (mobile) return `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(url)}`;
+    return `${url}${url.includes("#") ? "" : "#toolbar=0&navpanes=0&view=FitH"}`;
+  }
+  return url;
 }
