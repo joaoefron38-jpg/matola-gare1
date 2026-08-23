@@ -34,6 +34,8 @@ function inlineUrl(url: string) {
 function Viewer() {
   const { type, id } = Route.useParams();
   const table = TABLES[type];
+  const docRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["viewer", type, id],
@@ -52,6 +54,18 @@ function Viewer() {
   const videoUrl: string | undefined = data?.video_url ? inlineUrl(data.video_url) : undefined;
   const imageUrl: string | undefined = data?.image_url ? inlineUrl(data.image_url) : undefined;
   const isDirectVideo = !!videoUrl && /\.(mp4|webm|ogg)(\?.*)?$/i.test(videoUrl);
+  const docSrc = fileUrl ? docEmbedSrc(fileUrl) : undefined;
+
+  async function toggleFullscreen(el: HTMLElement | null) {
+    if (!el) return;
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await el.requestFullscreen();
+    } catch {
+      toast.error("Ecrã inteiro não suportado neste dispositivo");
+    }
+  }
+
 
   async function share() {
     const url = window.location.href;
