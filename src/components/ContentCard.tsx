@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Share2, Heart, Download, ExternalLink, BookOpen, Play } from "lucide-react";
+import { Share2, Heart, Download, BookOpen, Play } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -94,11 +94,6 @@ export function ContentCard({ item }: { item: CardAction }) {
           >
             {item.type === "knowledge" ? <><Play className="w-4 h-4" /> Assistir</> : <><BookOpen className="w-4 h-4" /> Ler aqui</>}
           </Link>
-          {item.externalLink && (
-            <a href={item.externalLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-secondary text-secondary-foreground text-sm hover:shadow-elevation-1">
-              <ExternalLink className="w-4 h-4" /> Link
-            </a>
-          )}
           {item.allowDownload && (item.pdfLink || item.bookLink) && (
             <a href={item.pdfLink || item.bookLink!} download className="inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-surface-variant text-sm hover:shadow-elevation-1">
               <Download className="w-4 h-4" /> Baixar
