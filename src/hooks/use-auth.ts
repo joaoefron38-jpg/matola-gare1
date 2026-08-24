@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { setDownloadsScope } from "@/lib/downloads-store";
+
 
 export type AppRole = "admin" | "user";
 
@@ -14,6 +16,7 @@ export function useAuth() {
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
       setSession(s);
       setUser(s?.user ?? null);
+      setDownloadsScope(s?.user?.id ?? null);
       if (s?.user) {
         setLoading(true);
         setTimeout(() => loadRoles(s.user.id).finally(() => setLoading(false)), 0);
@@ -25,11 +28,13 @@ export function useAuth() {
     supabase.auth.getSession().then(async ({ data }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
+      setDownloadsScope(data.session?.user?.id ?? null);
       if (data.session?.user) await loadRoles(data.session.user.id);
       setLoading(false);
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
 
   async function loadRoles(uid: string) {
     const { data } = await supabase.from("user_roles").select("role").eq("user_id", uid);

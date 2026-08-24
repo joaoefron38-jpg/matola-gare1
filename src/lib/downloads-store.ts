@@ -9,7 +9,27 @@ export type DownloadEntry = {
   at: string;
 };
 
-const KEY = "mg_downloads_v1";
+const LEGACY_KEY = "mg_downloads_v1";
+const SCOPE_KEY = "mg_downloads_scope";
+
+/** Define o dono atual do histórico de downloads (id do utilizador ou null = visitante). */
+export function setDownloadsScope(userId: string | null) {
+  if (typeof window === "undefined") return;
+  const next = userId ?? "guest";
+  if (localStorage.getItem(SCOPE_KEY) === next) return;
+  localStorage.setItem(SCOPE_KEY, next);
+  window.dispatchEvent(new Event("mg-downloads-changed"));
+}
+
+function scope(): string {
+  if (typeof window === "undefined") return "guest";
+  return localStorage.getItem(SCOPE_KEY) || "guest";
+}
+
+function storeKey(): string {
+  return `${LEGACY_KEY}:${scope()}`;
+}
+
 
 export function kindFromUrl(url: string, name = ""): DownloadKind {
   const s = `${url} ${name}`.toLowerCase();
@@ -22,7 +42,17 @@ export function kindFromUrl(url: string, name = ""): DownloadKind {
 export function listDownloads(): DownloadEntry[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(KEY);
+    const key = storeKey();
+    let raw = localStorage.getItem(key);
+    // migração única do histórico antigo (sem dono) para o utilizador atual
+    if (raw === null) {
+      const legacy = localStorage.getItem(LEGACY_KEY);
+      if (legacy !== null) {
+        localStorage.setItem(key, legacy);
+        localStorage.removeItem(LEGACY_KEY);
+        raw = legacy;
+      }
+    }
     const arr = raw ? (JSON.parse(raw) as DownloadEntry[]) : [];
     return Array.isArray(arr) ? arr : [];
   } catch {
@@ -31,9 +61,10 @@ export function listDownloads(): DownloadEntry[] {
 }
 
 function write(list: DownloadEntry[]) {
-  localStorage.setItem(KEY, JSON.stringify(list.slice(0, 200)));
+  localStorage.setItem(storeKey(), JSON.stringify(list.slice(0, 200)));
   window.dispatchEvent(new Event("mg-downloads-changed"));
 }
+
 
 export function recordDownload(entry: Omit<DownloadEntry, "id" | "at" | "kind"> & { kind?: DownloadKind }) {
   if (typeof window === "undefined") return;

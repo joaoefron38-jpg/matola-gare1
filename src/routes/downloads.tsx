@@ -6,6 +6,8 @@ import { Download, Trash2, ExternalLink, FileText, Image as ImageIcon, Video, Mu
 import {
   listDownloads, removeDownload, clearDownloads, type DownloadEntry,
 } from "@/lib/downloads-store";
+import { useAuth } from "@/hooks/use-auth";
+
 
 export const Route = createFileRoute("/downloads")({
   head: () => ({
@@ -24,8 +26,10 @@ export const Route = createFileRoute("/downloads")({
 const ICONS = { document: FileText, image: ImageIcon, video: Video, audio: Music } as const;
 
 function DownloadsPage() {
+  useAuth(); // garante que o histórico mostrado pertence ao utilizador atual
   const [items, setItems] = useState<DownloadEntry[]>([]);
   const [playing, setPlaying] = useState<DownloadEntry | null>(null);
+
 
   useEffect(() => {
     const sync = () => setItems(listDownloads());
