@@ -8,7 +8,7 @@ import { FileUpload } from "./FileUpload";
 export type Field = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "url" | "date" | "checkbox" | "number";
+  type?: "text" | "textarea" | "url" | "date" | "datetime" | "checkbox" | "number";
   required?: boolean;
   upload?: { accept?: string; folder?: string };
 };
