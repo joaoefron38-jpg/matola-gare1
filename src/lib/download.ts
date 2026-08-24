@@ -30,6 +30,7 @@ export async function downloadFile(url: string, title = "documento") {
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(objectUrl), 10_000);
+    recordDownload({ title, url, name });
     toast.success("Download iniciado", { id });
   } catch {
     toast.dismiss(id);
@@ -42,5 +43,6 @@ export async function downloadFile(url: string, title = "documento") {
     document.body.appendChild(a);
     a.click();
     a.remove();
+    recordDownload({ title, url, name });
   }
 }
