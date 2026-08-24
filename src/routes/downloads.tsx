@@ -6,6 +6,8 @@ import { Download, Trash2, ExternalLink, FileText, Image as ImageIcon, Video, Mu
 import {
   listDownloads, removeDownload, clearDownloads, type DownloadEntry,
 } from "@/lib/downloads-store";
+import { useAuth } from "@/hooks/use-auth";
+
 
 export const Route = createFileRoute("/downloads")({
   head: () => ({
