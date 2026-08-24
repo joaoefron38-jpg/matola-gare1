@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { setDownloadsScope } from "@/lib/downloads-store";
+
 
 export type AppRole = "admin" | "user";
 
