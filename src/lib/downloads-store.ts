@@ -9,7 +9,27 @@ export type DownloadEntry = {
   at: string;
 };
 
-const KEY = "mg_downloads_v1";
+const LEGACY_KEY = "mg_downloads_v1";
+const SCOPE_KEY = "mg_downloads_scope";
+
+/** Define o dono atual do histórico de downloads (id do utilizador ou null = visitante). */
+export function setDownloadsScope(userId: string | null) {
+  if (typeof window === "undefined") return;
+  const next = userId ?? "guest";
+  if (localStorage.getItem(SCOPE_KEY) === next) return;
+  localStorage.setItem(SCOPE_KEY, next);
+  window.dispatchEvent(new Event("mg-downloads-changed"));
+}
+
+function scope(): string {
+  if (typeof window === "undefined") return "guest";
+  return localStorage.getItem(SCOPE_KEY) || "guest";
+}
+
+function storeKey(): string {
+  return `${LEGACY_KEY}:${scope()}`;
+}
+
 
 export function kindFromUrl(url: string, name = ""): DownloadKind {
   const s = `${url} ${name}`.toLowerCase();
