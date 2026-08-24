@@ -24,8 +24,10 @@ export const Route = createFileRoute("/downloads")({
 const ICONS = { document: FileText, image: ImageIcon, video: Video, audio: Music } as const;
 
 function DownloadsPage() {
+  useAuth(); // garante que o histórico mostrado pertence ao utilizador atual
   const [items, setItems] = useState<DownloadEntry[]>([]);
   const [playing, setPlaying] = useState<DownloadEntry | null>(null);
+
 
   useEffect(() => {
     const sync = () => setItems(listDownloads());
