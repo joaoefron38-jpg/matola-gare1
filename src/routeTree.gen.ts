@@ -19,6 +19,7 @@ import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as LocalizacaoRouteImport } from './routes/localizacao'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -82,6 +83,11 @@ const GaleriaRoute = GaleriaRouteImport.update({
 const FavoritosRoute = FavoritosRouteImport.update({
   id: '/favoritos',
   path: '/favoritos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BibliotecaRoute = BibliotecaRouteImport.update({
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/downloads': typeof DownloadsRoute
   '/favoritos': typeof FavoritosRoute
   '/galeria': typeof GaleriaRoute
   '/localizacao': typeof LocalizacaoRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/downloads': typeof DownloadsRoute
   '/favoritos': typeof FavoritosRoute
   '/galeria': typeof GaleriaRoute
   '/localizacao': typeof LocalizacaoRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/downloads': typeof DownloadsRoute
   '/favoritos': typeof FavoritosRoute
   '/galeria': typeof GaleriaRoute
   '/localizacao': typeof LocalizacaoRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/biblioteca'
+    | '/downloads'
     | '/favoritos'
     | '/galeria'
     | '/localizacao'
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/biblioteca'
+    | '/downloads'
     | '/favoritos'
     | '/galeria'
     | '/localizacao'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/biblioteca'
+    | '/downloads'
     | '/favoritos'
     | '/galeria'
     | '/localizacao'
@@ -320,6 +332,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   BibliotecaRoute: typeof BibliotecaRoute
+  DownloadsRoute: typeof DownloadsRoute
   FavoritosRoute: typeof FavoritosRoute
   GaleriaRoute: typeof GaleriaRoute
   LocalizacaoRoute: typeof LocalizacaoRoute
@@ -404,6 +417,13 @@ declare module '@tanstack/react-router' {
       path: '/favoritos'
       fullPath: '/favoritos'
       preLoaderRoute: typeof FavoritosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/biblioteca': {
@@ -536,6 +556,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   BibliotecaRoute: BibliotecaRoute,
+  DownloadsRoute: DownloadsRoute,
   FavoritosRoute: FavoritosRoute,
   GaleriaRoute: GaleriaRoute,
   LocalizacaoRoute: LocalizacaoRoute,

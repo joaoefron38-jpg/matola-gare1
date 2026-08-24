@@ -5,7 +5,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, Menu, X, Search,
-  Moon, Sun, LogOut, LayoutDashboard, LayoutGrid,
+  Moon, Sun, LogOut, LayoutDashboard, LayoutGrid, Download,
 } from "lucide-react";
 
 const NAV = [
@@ -15,6 +15,7 @@ const NAV = [
   { to: "/galeria", label: "Galeria", icon: Images },
   { to: "/noticias", label: "Notícias", icon: Newspaper },
   { to: "/localizacao", label: "Localização", icon: MapPin },
+  { to: "/downloads", label: "Downloads", icon: Download },
   { to: "/sobre", label: "Sobre", icon: Info },
 ] as const;
 

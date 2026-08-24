@@ -6,6 +6,6 @@ export const Route = createFileRoute("/admin/noticias")({ component: () => (
     { name: "title", label: "Título", required: true },
     { name: "body", label: "Conteúdo", type: "textarea", required: true },
     { name: "image_url", label: "Imagem", type: "url", upload: { accept: "image/*", folder: "noticias" } },
-    { name: "published_at", label: "Data de publicação (ISO)", type: "text" },
+    { name: "published_at", label: "Data e hora da publicação", type: "datetime" },
   ]} />
 )});
