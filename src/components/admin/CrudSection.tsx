@@ -39,6 +39,7 @@ export function CrudSection<T extends Record<string, any>>({
     for (const f of fields) {
       const v = row[f.name];
       if (f.type === "checkbox") clean[f.name] = !!v;
+      else if (f.type === "datetime") clean[f.name] = v ? new Date(v).toISOString() : new Date().toISOString();
       else if (f.type === "number") clean[f.name] = v === "" || v == null ? null : Number(v);
       else clean[f.name] = v === "" ? null : v;
     }
@@ -119,6 +120,22 @@ function FormPanel({ fields, initial, onCancel, onSave }: { fields: Field[]; ini
             <span className="block mb-1 text-muted-foreground">{f.label}{f.required && " *"}</span>
             {f.type === "textarea" ? (
               <textarea value={row[f.name] ?? ""} onChange={(e) => setRow({ ...row, [f.name]: e.target.value })} rows={4} className="w-full rounded-xl bg-surface-variant p-3 outline-none focus:ring-2 focus:ring-primary" />
+            ) : f.type === "datetime" ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="datetime-local"
+                  value={toLocalInput(row[f.name])}
+                  onChange={(e) => setRow({ ...row, [f.name]: e.target.value })}
+                  className="h-11 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary"
+                />
+                <button
+                  type="button"
+                  onClick={() => setRow({ ...row, [f.name]: toLocalInput(new Date().toISOString()) })}
+                  className="h-11 px-4 rounded-full bg-secondary text-secondary-foreground text-sm"
+                >
+                  Agora
+                </button>
+              </div>
             ) : f.type === "checkbox" ? (
               <input type="checkbox" checked={!!row[f.name]} onChange={(e) => setRow({ ...row, [f.name]: e.target.checked })} className="w-5 h-5" />
             ) : (
@@ -145,4 +162,13 @@ function FormPanel({ fields, initial, onCancel, onSave }: { fields: Field[]; ini
       </div>
     </div>
   );
+}
+
+/** Converte ISO -> valor aceito por <input type="datetime-local"> (hora local). */
+function toLocalInput(value?: string | null) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return typeof value === "string" ? value.slice(0, 16) : "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
