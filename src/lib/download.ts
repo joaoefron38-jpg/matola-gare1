@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { recordDownload } from "./downloads-store";
 
 function guessName(url: string, title: string) {
   try {
