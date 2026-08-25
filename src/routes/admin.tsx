@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { LayoutDashboard, FileText, Users, MapPin, Info, Images, GraduationCap, BookOpen, Newspaper, Circle, MessageSquare } from "lucide-react";
+import { LayoutDashboard, FileText, Users, MapPin, Info, Images, GraduationCap, BookOpen, Newspaper, Circle, MessageSquare, ArrowRight, PlusCircle } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Painel — Matola Gare" }, { name: "robots", content: "noindex" }] }),
@@ -21,6 +21,13 @@ const TABS = [
   { to: "/admin/escola", label: "Escola", icon: Info },
   { to: "/admin/localizacao", label: "Localização", icon: MapPin },
   { to: "/admin/utilizadores", label: "Utilizadores", icon: Users },
+] as const;
+
+const QUICK_ACTIONS = [
+  { to: "/admin/biblioteca", label: "Publicar livro", desc: "Adicionar PDF, capa e download", icon: BookOpen },
+  { to: "/admin/sala", label: "Publicar vídeo", desc: "Aulas e materiais da sala", icon: GraduationCap },
+  { to: "/admin/noticias", label: "Criar notícia", desc: "Avisos com data simples", icon: Newspaper },
+  { to: "/admin/utilizadores", label: "Gerir utilizadores", desc: "Criar, promover ou remover", icon: Users },
 ] as const;
 
 function AdminLayout() {
@@ -90,6 +97,22 @@ function Dashboard() {
 
   return (
     <div className="space-y-6 animate-fade-up">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {QUICK_ACTIONS.map(({ to, label, desc, icon: Icon }) => (
+          <Link key={to} to={to} className="surface-card surface-card-hover p-4 flex items-center gap-3 group">
+            <div className="w-11 h-11 rounded-2xl bg-primary-container text-primary-container-foreground grid place-items-center shrink-0">
+              <Icon className="w-5 h-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-medium flex items-center gap-1">
+                {label} <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              </div>
+              <p className="text-xs text-muted-foreground line-clamp-1">{desc}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard label="Biblioteca" value={stats?.library ?? 0} icon={BookOpen} />
         <StatCard label="Sala do Conhecimento" value={stats?.knowledge ?? 0} icon={GraduationCap} />
@@ -130,6 +153,18 @@ function Dashboard() {
               ))}
             </ul>
           )}
+        </div>
+      </div>
+
+      <div className="surface-card p-6">
+        <h2 className="font-semibold flex items-center gap-2 mb-4"><PlusCircle className="w-4 h-4 text-primary" /> Navegação rápida</h2>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {TABS.filter((tab) => tab.to !== "/admin").map(({ to, label, icon: Icon }) => (
+            <Link key={to} to={to} className="flex items-center justify-between gap-3 rounded-xl bg-surface-variant px-4 py-3 text-sm hover:shadow-elevation-1 transition-shadow">
+              <span className="inline-flex items-center gap-2"><Icon className="w-4 h-4 text-primary" /> {label}</span>
+              <ArrowRight className="w-4 h-4 text-muted-foreground" />
+            </Link>
+          ))}
         </div>
       </div>
     </div>

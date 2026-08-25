@@ -44,6 +44,48 @@ export type Database = {
         }
         Relationships: []
       }
+      download_records: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          received: number
+          status: string
+          title: string
+          total: number | null
+          updated_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name: string
+          received?: number
+          status?: string
+          title: string
+          total?: number | null
+          updated_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          received?: number
+          status?: string
+          title?: string
+          total?: number | null
+          updated_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
