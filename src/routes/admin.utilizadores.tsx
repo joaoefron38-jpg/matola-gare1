@@ -3,8 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { createUserAsAdmin } from "@/lib/admin.functions";
-import { Shield, ShieldOff, UserPlus, UserCog } from "lucide-react";
+import { createUserAsAdmin, removeUserAsAdmin, setUserAdminAsAdmin, updateUserPasswordAsAdmin } from "@/lib/admin.functions";
+import { Shield, ShieldOff, UserPlus, UserCog, Trash2, KeyRound, Search } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/utilizadores")({ component: Users });
@@ -17,7 +17,12 @@ function Users() {
   const [newName, setNewName] = useState("");
   const [newIsAdmin, setNewIsAdmin] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [search, setSearch] = useState("");
+  const [passwords, setPasswords] = useState<Record<string, string>>({});
   const createFn = useServerFn(createUserAsAdmin);
+  const setAdminFn = useServerFn(setUserAdminAsAdmin);
+  const removeFn = useServerFn(removeUserAsAdmin);
+  const resetPasswordFn = useServerFn(updateUserPasswordAsAdmin);
 
   const { data: rows } = useQuery({
     queryKey: ["admin_users"],
@@ -44,16 +49,36 @@ function Users() {
   }
 
   async function toggleAdmin(userId: string, isAdmin: boolean) {
-    if (isAdmin) {
-      const { error } = await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", "admin");
-      if (error) return toast.error(error.message);
-      toast.success("Admin removido");
-    } else {
-      const { error } = await supabase.from("user_roles").insert({ user_id: userId, role: "admin" });
-      if (error) return toast.error(error.message);
-      toast.success("Promovido a admin");
+    try {
+      await setAdminFn({ data: { userId, makeAdmin: !isAdmin } });
+      toast.success(isAdmin ? "Admin removido" : "Promovido a admin");
+      qc.invalidateQueries({ queryKey: ["admin_users"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao alterar função");
     }
-    qc.invalidateQueries({ queryKey: ["admin_users"] });
+  }
+
+  async function deleteUser(userId: string, label: string) {
+    if (!confirm(`Remover definitivamente ${label}?`)) return;
+    try {
+      await removeFn({ data: { userId } });
+      toast.success("Utilizador removido");
+      qc.invalidateQueries({ queryKey: ["admin_users"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao remover utilizador");
+    }
+  }
+
+  async function resetPassword(userId: string) {
+    const password = passwords[userId]?.trim() ?? "";
+    if (password.length < 6) { toast.error("A nova senha deve ter 6+ caracteres"); return; }
+    try {
+      await resetPasswordFn({ data: { userId, password } });
+      setPasswords((current) => ({ ...current, [userId]: "" }));
+      toast.success("Senha atualizada");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha ao atualizar senha");
+    }
   }
 
   async function createUser() {
@@ -67,6 +92,12 @@ function Users() {
     } catch (e: any) { toast.error(e.message ?? "Falha ao criar"); }
     finally { setCreating(false); }
   }
+
+  const filtered = (rows ?? []).filter((u) => {
+    const s = search.trim().toLowerCase();
+    if (!s) return true;
+    return `${u.full_name ?? ""} ${u.email ?? ""}`.toLowerCase().includes(s);
+  });
 
   return (
     <div className="animate-fade-up space-y-4">
@@ -96,41 +127,55 @@ function Users() {
         </button>
       </div>
 
+      <div className="surface-card p-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Pesquisar utilizador por nome ou email" className="w-full h-10 rounded-full bg-surface-variant pl-10 pr-4 outline-none focus:ring-2 focus:ring-primary" />
+        </div>
+      </div>
 
-      <div className="surface-card overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-surface-variant">
-            <tr>
-              <th className="text-left px-4 py-2">Nome</th>
-              <th className="text-left px-4 py-2">Email</th>
-              <th className="text-left px-4 py-2">Funções</th>
-              <th className="text-left px-4 py-2">Registado</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {!rows || rows.length === 0 ? (
-              <tr><td colSpan={5} className="text-center py-8 text-muted-foreground">Sem utilizadores.</td></tr>
-            ) : rows.map((u) => {
+
+      <div className="space-y-3">
+            {filtered.length === 0 ? (
+              <div className="surface-card py-8 text-center text-muted-foreground">Sem utilizadores.</div>
+            ) : filtered.map((u) => {
               const isAdmin = u.roles.includes("admin");
+              const label = u.email || u.full_name || "este utilizador";
               return (
-                <tr key={u.id} className="border-t border-border">
-                  <td className="px-4 py-2">{u.full_name || "—"}</td>
-                  <td className="px-4 py-2">{u.email}</td>
-                  <td className="px-4 py-2">
-                    {isAdmin ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container text-primary-container-foreground text-xs">Admin</span> : <span className="text-xs text-muted-foreground">Utilizador</span>}
-                  </td>
-                  <td className="px-4 py-2">{new Date(u.created_at).toLocaleDateString("pt-PT")}</td>
-                  <td className="px-4 py-2 text-right">
-                    <button onClick={() => toggleAdmin(u.id, isAdmin)} className="inline-flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-secondary hover:shadow-elevation-1">
+                <article key={u.id} className="surface-card p-4 flex flex-col gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{u.full_name || "Sem nome"}</div>
+                      <div className="text-sm text-muted-foreground truncate">{u.email}</div>
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                        {isAdmin ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container text-primary-container-foreground">Admin</span> : <span>Utilizador</span>}
+                        <span>Registado: {new Date(u.created_at).toLocaleDateString("pt-PT")}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => toggleAdmin(u.id, isAdmin)} className="inline-flex items-center gap-1 text-xs px-3 py-2 rounded-full bg-secondary hover:shadow-elevation-1">
                       {isAdmin ? <><ShieldOff className="w-3 h-3" /> Remover</> : <><Shield className="w-3 h-3" /> Tornar Admin</>}
+                      </button>
+                      <button onClick={() => deleteUser(u.id, label)} className="inline-flex items-center gap-1 text-xs px-3 py-2 rounded-full bg-destructive/10 text-destructive hover:shadow-elevation-1">
+                        <Trash2 className="w-3 h-3" /> Remover utilizador
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                    <input
+                      value={passwords[u.id] ?? ""}
+                      onChange={(e) => setPasswords((current) => ({ ...current, [u.id]: e.target.value }))}
+                      placeholder="Nova senha (opcional)"
+                      type="text"
+                      className="h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary flex-1"
+                    />
+                    <button onClick={() => resetPassword(u.id)} className="inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-full bg-surface-variant text-sm">
+                      <KeyRound className="w-4 h-4" /> Alterar senha
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </article>
               );
             })}
-          </tbody>
-        </table>
       </div>
     </div>
   );

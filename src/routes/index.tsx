@@ -11,6 +11,10 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Escola Secundária da Matola Gare" },
       { name: "description", content: "Plataforma digital escolar: biblioteca, vídeos, galeria, notícias e localização da Escola Secundária da Matola Gare *#efRon" },
+      { property: "og:title", content: "Escola Secundária da Matola Gare" },
+      { property: "og:description", content: "Biblioteca digital escolar com publicações, vídeos, notícias, galeria e localização da Escola Secundária da Matola Gare." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,

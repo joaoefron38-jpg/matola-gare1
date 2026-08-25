@@ -1,44 +1,53 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-
-const schema = z.object({
-  email: z.string().trim().email().max(255),
-  password: z.string().min(6).max(72),
-  fullName: z.string().trim().max(120).optional(),
-  makeAdmin: z.boolean().optional(),
-});
+import {
+  assertCurrentUserIsAdmin,
+  createManagedUser,
+  removeManagedUser,
+  setManagedUserAdmin,
+  updateManagedUserPassword,
+} from "./admin.server";
 
 export const createUserAsAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => schema.parse(input))
+  .inputValidator((input: unknown) => z.object({
+    email: z.string().trim().email().max(255),
+    password: z.string().min(6).max(72),
+    fullName: z.string().trim().max(120).optional(),
+    makeAdmin: z.boolean().optional(),
+  }).parse(input))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin, error: roleErr } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleErr) throw new Error(roleErr.message);
-    if (!isAdmin) throw new Error("Apenas administradores podem criar utilizadores.");
+    await assertCurrentUserIsAdmin(context);
+    return createManagedUser(data);
+  });
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+export const setUserAdminAsAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({
+    userId: z.string().uuid(),
+    makeAdmin: z.boolean(),
+  }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertCurrentUserIsAdmin(context);
+    return setManagedUserAdmin(data, context.userId);
+  });
 
-    const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
-      email: data.email,
-      password: data.password,
-      email_confirm: true,
-      user_metadata: { full_name: data.fullName ?? data.email.split("@")[0] },
-    });
-    if (error || !created?.user) throw new Error(error?.message ?? "Falha ao criar utilizador");
+export const updateUserPasswordAsAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({
+    userId: z.string().uuid(),
+    password: z.string().min(6).max(72),
+  }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertCurrentUserIsAdmin(context);
+    return updateManagedUserPassword(data);
+  });
 
-    const uid = created.user.id;
-    await supabaseAdmin.from("profiles").upsert({
-      id: uid,
-      email: data.email,
-      full_name: data.fullName ?? data.email.split("@")[0],
-    });
-    await supabaseAdmin.from("user_roles").upsert({ user_id: uid, role: "user" });
-    if (data.makeAdmin) {
-      await supabaseAdmin.from("user_roles").upsert({ user_id: uid, role: "admin" });
-    }
-    return { ok: true, id: uid };
+export const removeUserAsAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ userId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertCurrentUserIsAdmin(context);
+    return removeManagedUser(data, context.userId);
   });
