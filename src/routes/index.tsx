@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { ContentCard } from "@/components/ContentCard";
-import { BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, School, Search, ArrowRight, Calendar } from "lucide-react";
+import { BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, School, Search, ArrowRight, Calendar, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,10 +21,10 @@ export const Route = createFileRoute("/")({
 });
 
 const QUICK = [
-  { to: "/biblioteca", label: "Biblioteca", desc: "Livros, apostilas e PDFs", icon: BookOpen },
-  { to: "/sala-do-conhecimento", label: "Sala do Conhecimento", desc: "Aulas, palestras e vídeos", icon: GraduationCap },
-  { to: "/galeria", label: "Galeria", desc: "Fotos e momentos da escola", icon: Images },
-  { to: "/noticias", label: "Notícias", desc: "Comunicados e avisos", icon: Newspaper },
+  { to: "/biblioteca", label: "Biblioteca", desc: "Livros, apostilas e PDFs", icon: BookOpen, key: "library" },
+  { to: "/sala-do-conhecimento", label: "Sala do Conhecimento", desc: "Aulas, palestras e vídeos", icon: GraduationCap, key: "knowledge" },
+  { to: "/galeria", label: "Galeria", desc: "Fotos e momentos da escola", icon: Images, key: "gallery" },
+  { to: "/noticias", label: "Notícias", desc: "Comunicados e avisos", icon: Newspaper, key: "news" },
   { to: "/visitar", label: "Visitar a Escola", desc: "Missão, visão e contactos", icon: School },
   { to: "/localizacao", label: "Localização", desc: "Como chegar à escola", icon: MapPin },
 ] as const;
@@ -49,6 +49,47 @@ function Index() {
       };
     },
   });
+
+  const { data: counts } = useQuery({
+    queryKey: ["home_counts"],
+    queryFn: async () => {
+      const head = { count: "exact" as const, head: true };
+      const [lib, kn, gal, news] = await Promise.all([
+        supabase.from("library_items").select("id", head),
+        supabase.from("knowledge_items").select("id", head),
+        supabase.from("gallery_items").select("id", head),
+        supabase.from("news_items").select("id", head),
+      ]);
+      return {
+        library: lib.count ?? 0,
+        knowledge: kn.count ?? 0,
+        gallery: gal.count ?? 0,
+        news: news.count ?? 0,
+      } as Record<string, number>;
+    },
+  });
+
+  const totalItems = counts ? Object.values(counts).reduce((a, b) => a + b, 0) : 0;
+
+  const newestDate = (() => {
+    const dates = [
+      ...(highlights?.library ?? []),
+      ...(highlights?.knowledge ?? []),
+      ...(highlights?.gallery ?? []),
+      ...(highlights?.news ?? []),
+    ].map((r: { created_at: string }) => r.created_at).filter(Boolean).sort().reverse();
+    return dates[0] ?? null;
+  })();
+
+  const freshCount = (() => {
+    const limit = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return [
+      ...(highlights?.library ?? []),
+      ...(highlights?.knowledge ?? []),
+      ...(highlights?.gallery ?? []),
+      ...(highlights?.news ?? []),
+    ].filter((r: { created_at: string }) => new Date(r.created_at).getTime() > limit).length;
+  })();
 
   const hasAny =
     (highlights?.library.length ?? 0) +
@@ -91,9 +132,41 @@ function Index() {
         </div>
       </section>
 
+      {totalItems > 0 && (
+        <section className="mx-auto max-w-6xl px-4 pb-6">
+          <Link
+            to="/publicacoes"
+            className="surface-card surface-card-hover flex flex-col sm:flex-row sm:items-center gap-3 p-5 animate-fade-up"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-primary text-primary-foreground grid place-items-center shrink-0">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="font-semibold">
+                  {totalItems} {totalItems === 1 ? "publicação disponível" : "publicações disponíveis"}
+                </h2>
+                {freshCount > 0 && (
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-primary-container text-primary-container-foreground">
+                    {freshCount} nova{freshCount === 1 ? "" : "s"} esta semana
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {counts?.library ?? 0} livros · {counts?.knowledge ?? 0} vídeos · {counts?.gallery ?? 0} fotos · {counts?.news ?? 0} notícias
+                {newestDate ? ` · última atualização ${new Date(newestDate).toLocaleDateString("pt-PT")}` : ""}
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1 text-sm text-primary font-medium">
+              Ver publicações <ArrowRight className="w-4 h-4" />
+            </span>
+          </Link>
+        </section>
+      )}
+
       <section className="mx-auto max-w-6xl px-4 pb-10">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {QUICK.map(({ to, label, desc, icon: Icon }, i) => (
+          {QUICK.map(({ to, label, desc, icon: Icon, key }, i) => (
             <Link key={to} to={to} className="surface-card surface-card-hover p-6 group animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary-container text-primary-container-foreground grid place-items-center shrink-0">
@@ -101,7 +174,14 @@ function Index() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold">{label}</h3>
+                    <h3 className="font-semibold flex items-center gap-2">
+                      {label}
+                      {key && (counts?.[key] ?? 0) > 0 && (
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary-container text-primary-container-foreground">
+                          {counts?.[key]}
+                        </span>
+                      )}
+                    </h3>
                     <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">{desc}</p>

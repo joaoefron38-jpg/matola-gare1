@@ -36,18 +36,14 @@ export async function createManagedUser(input: { email: string; password: string
   if (error || !created?.user) throw new Error(error?.message ?? "Falha ao criar utilizador");
 
   const uid = created.user.id;
-  const { error: profileError } = await supabaseAdmin.from("profiles").upsert({
-    id: uid,
-    email,
-    full_name: fullName,
-  });
+  const { error: profileError } = await supabaseAdmin.from("profiles").upsert({ id: uid, email, full_name: fullName }, { onConflict: "id" });
   if (profileError) throw new Error(profileError.message);
 
-  const { error: roleError } = await supabaseAdmin.from("user_roles").upsert({ user_id: uid, role: "user" });
+  const { error: roleError } = await supabaseAdmin.from("user_roles").upsert({ user_id: uid, role: "user" }, { onConflict: "user_id,role", ignoreDuplicates: true });
   if (roleError) throw new Error(roleError.message);
 
   if (input.makeAdmin) {
-    const { error: adminRoleError } = await supabaseAdmin.from("user_roles").upsert({ user_id: uid, role: "admin" });
+    const { error: adminRoleError } = await supabaseAdmin.from("user_roles").upsert({ user_id: uid, role: "admin" }, { onConflict: "user_id,role", ignoreDuplicates: true });
     if (adminRoleError) throw new Error(adminRoleError.message);
   }
 
@@ -66,7 +62,7 @@ export async function setManagedUserAdmin(input: { userId: string; makeAdmin: bo
   if (!input.makeAdmin && isPrimaryAdminEmail(profile?.email)) throw new Error("Os administradores principais não podem perder acesso.");
 
   if (input.makeAdmin) {
-    const { error } = await supabaseAdmin.from("user_roles").upsert({ user_id: input.userId, role: "admin" });
+    const { error } = await supabaseAdmin.from("user_roles").upsert({ user_id: input.userId, role: "admin" }, { onConflict: "user_id,role", ignoreDuplicates: true });
     if (error) throw new Error(error.message);
     return { ok: true };
   }
