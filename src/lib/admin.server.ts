@@ -1,9 +1,8 @@
 const PRIMARY_ADMIN_EMAILS = new Set(["efronjoao9@gmail.com", "efronjoao969@gmail.com"]);
 
 type AdminContext = {
-  supabase: {
-    rpc: (name: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>;
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any;
   userId: string;
 };
 
