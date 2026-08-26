@@ -175,7 +175,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link to="/auth" className="hover:text-foreground opacity-70">Administração</Link>
           </div>
           <div className="text-sm text-muted-foreground md:text-right">
-            Créditos · <span className="font-medium text-foreground">efRon QR</span>
+            © {new Date().getFullYear()} <span className="font-medium text-foreground">efRon</span> · Todos os direitos reservados
           </div>
         </div>
       </footer>
