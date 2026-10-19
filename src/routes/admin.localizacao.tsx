@@ -5,7 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { MapPin, Save } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/admin/localizacao")({ component: LocAdmin });
+export const Route = createFileRoute("/admin/localizacao")({ head: () => ({ meta: [
+    { title: "Localização — Administração Matola Gare" },
+    { name: "description", content: "Definição do endereço e coordenadas da escola." },
+    { property: "og:title", content: "Localização — Administração Matola Gare" },
+    { property: "og:description", content: "Definição do endereço e coordenadas da escola." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }), component: LocAdmin });
 
 function LocAdmin() {
   const qc = useQueryClient();

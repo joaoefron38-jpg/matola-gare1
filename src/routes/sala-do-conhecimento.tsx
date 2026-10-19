@@ -6,12 +6,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { GraduationCap } from "lucide-react";
 
 export const Route = createFileRoute("/sala-do-conhecimento")({
-  head: () => ({
-    meta: [
-      { title: "Sala do Conhecimento — Matola Gare" },
-      { name: "description", content: "Vídeos, aulas, palestras e conteúdos educativos da Escola Secundária da Matola Gare." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Sala do Conhecimento — Matola Gare" },
+    { name: "description", content: "Vídeos, aulas, palestras e conteúdos educativos da Escola Secundária da Matola Gare." },
+    { property: "og:title", content: "Sala do Conhecimento — Matola Gare" },
+    { property: "og:description", content: "Vídeos, aulas, palestras e conteúdos educativos da Escola Secundária da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Sala,
 });
 

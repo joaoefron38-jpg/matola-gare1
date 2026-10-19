@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,19 +26,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { theme, mounted, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [schoolName, setSchoolName] = useState<string>("Matola Gare");
+  const { data: branding } = useQuery({
+    queryKey: ["school_branding"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("school_info").select("logo_url,name").eq("id", 1).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+  const logoUrl = branding?.logo_url;
+  const schoolName = branding?.name || "Matola Gare";
   const navigate = useNavigate();
-
-  useEffect(() => {
-    let cancelled = false;
-    supabase.from("school_info").select("logo_url,name").eq("id", 1).maybeSingle().then(({ data }) => {
-      if (cancelled || !data) return;
-      if (data.logo_url) setLogoUrl(data.logo_url);
-      if (data.name) setSchoolName(data.name);
-    });
-    return () => { cancelled = true; };
-  }, []);
 
   // Presence heartbeat
   useEffect(() => {

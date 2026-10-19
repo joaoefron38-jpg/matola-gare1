@@ -1,13 +1,21 @@
 import { createFileRoute, Link, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { LayoutDashboard, FileText, Users, MapPin, Info, Images, GraduationCap, BookOpen, Newspaper, Circle, MessageSquare, ArrowRight, PlusCircle } from "lucide-react";
+import { LayoutDashboard, FileText, Users, MapPin, Info, Images, GraduationCap, BookOpen, Newspaper, Circle, MessageSquare, ArrowRight, PlusCircle, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Painel — Matola Gare" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [
+    { title: "Painel — Matola Gare" },
+    { name: "description", content: "Gestão de publicações e utilizadores da Matola Gare." },
+    { property: "og:title", content: "Painel — Matola Gare" },
+    { property: "og:description", content: "Gestão de publicações e utilizadores da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: AdminLayout,
 });
 
@@ -63,16 +71,31 @@ function AdminLayout() {
           ))}
         </div>
 
-        {isDashboard ? <Dashboard /> : <Outlet />}
+        {loading ? <p className="py-10 text-center text-muted-foreground">A carregar…</p> : isAdmin ? <>{isDashboard && <Dashboard />}<Outlet /></> : null}
       </div>
     </AppShell>
   );
 }
 
 function Dashboard() {
+  const qc = useQueryClient();
+  const { data: recentPublications = [] } = useQuery({
+    queryKey: ["admin_recent_publications"],
+    queryFn: async () => {
+      const results = await Promise.all([
+        supabase.from("library_items").select("id,title,created_at").order("created_at", { ascending: false }).limit(4),
+        supabase.from("knowledge_items").select("id,title,created_at").order("created_at", { ascending: false }).limit(4),
+        supabase.from("gallery_items").select("id,title,created_at").order("created_at", { ascending: false }).limit(4),
+        supabase.from("news_items").select("id,title,created_at").order("created_at", { ascending: false }).limit(4),
+      ]);
+      const paths = ["/admin/biblioteca", "/admin/sala", "/admin/galeria", "/admin/noticias"] as const;
+      results.forEach((result) => { if (result.error) throw result.error; });
+      return results.flatMap((result, i) => (result.data ?? []).map((item) => ({ ...item, to: paths[i] }))).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 6);
+    },
+  });
   const { data: stats } = useQuery({
     queryKey: ["admin_stats"],
-    refetchInterval: 15000,
+    refetchInterval: 30000,
     queryFn: async () => {
       const [lib, kn, gal, news, users, presence] = await Promise.all([
         supabase.from("library_items").select("id", { count: "exact", head: true }),
@@ -97,6 +120,10 @@ function Dashboard() {
 
   return (
     <div className="space-y-6 animate-fade-up">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-semibold">Resumo da escola</h2>
+        <Button variant="outline" size="sm" onClick={() => { void qc.invalidateQueries({ queryKey: ["admin_stats"] }); void qc.invalidateQueries({ queryKey: ["recent_logins"] }); void qc.invalidateQueries({ queryKey: ["admin_recent_publications"] }); }}><RefreshCw /> Atualizar</Button>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {QUICK_ACTIONS.map(({ to, label, desc, icon: Icon }) => (
           <Link key={to} to={to} className="surface-card surface-card-hover p-4 flex items-center gap-3 group">
@@ -130,7 +157,7 @@ function Dashboard() {
             <p className="text-sm text-muted-foreground">Nenhum utilizador online no momento.</p>
           ) : (
             <ul className="divide-y divide-border">
-              {stats!.online.map((o) => (
+              {stats?.online.map((o) => (
                 <li key={o.user_id} className="py-2 flex items-center justify-between text-sm">
                   <span>{o.email || o.user_id.slice(0, 8)}</span>
                   <span className="text-xs text-muted-foreground">{new Date(o.last_seen_at).toLocaleTimeString("pt-PT")}</span>
@@ -155,6 +182,11 @@ function Dashboard() {
           )}
         </div>
       </div>
+
+      <section className="border-t border-border pt-5">
+        <h2 className="mb-3 flex items-center gap-2 font-semibold"><FileText className="h-4 w-4 text-primary" /> Publicações recentes</h2>
+        {recentPublications.length === 0 ? <p className="text-sm text-muted-foreground">Ainda não há publicações.</p> : <ul className="divide-y divide-border">{recentPublications.map((item) => <li key={`${item.to}-${item.id}`}><Link to={item.to} className="flex items-center justify-between gap-3 py-3 text-sm hover:text-primary"><span className="min-w-0 truncate font-medium">{item.title || "Sem título"}</span><span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString("pt-PT")}<ArrowRight className="h-4 w-4" /></span></Link></li>)}</ul>}
+      </section>
 
       <div className="surface-card p-6">
         <h2 className="font-semibold flex items-center gap-2 mb-4"><PlusCircle className="w-4 h-4 text-primary" /> Navegação rápida</h2>

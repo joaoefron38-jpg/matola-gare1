@@ -6,7 +6,14 @@ import { FileUpload } from "@/components/admin/FileUpload";
 import { Save, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/admin/escola")({ component: EscolaAdmin });
+export const Route = createFileRoute("/admin/escola")({ head: () => ({ meta: [
+    { title: "Escola — Administração Matola Gare" },
+    { name: "description", content: "Gestão da identidade e contactos da escola." },
+    { property: "og:title", content: "Escola — Administração Matola Gare" },
+    { property: "og:description", content: "Gestão da identidade e contactos da escola." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }), component: EscolaAdmin });
 
 const FIELDS: { key: string; label: string; area?: boolean }[] = [
   { key: "name", label: "Nome da escola" },

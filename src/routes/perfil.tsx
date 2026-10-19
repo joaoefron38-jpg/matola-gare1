@@ -7,7 +7,14 @@ import { useAuth } from "@/hooks/use-auth";
 import { User as UserIcon, Heart, Clock, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/perfil")({
-  head: () => ({ meta: [{ title: "Meu Perfil — Matola Gare" }] }),
+  head: () => ({ meta: [
+    { title: "Meu Perfil — Matola Gare" },
+    { name: "description", content: "Informações da conta e histórico de leitura Matola Gare." },
+    { property: "og:title", content: "Meu Perfil — Matola Gare" },
+    { property: "og:description", content: "Informações da conta e histórico de leitura Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Perfil,
 });
 

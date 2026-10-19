@@ -8,7 +8,14 @@ import { useAuth } from "@/hooks/use-auth";
 import { Heart } from "lucide-react";
 
 export const Route = createFileRoute("/favoritos")({
-  head: () => ({ meta: [{ title: "Favoritos — Matola Gare" }] }),
+  head: () => ({ meta: [
+    { title: "Favoritos — Matola Gare" },
+    { name: "description", content: "Publicações guardadas na sua conta Matola Gare." },
+    { property: "og:title", content: "Favoritos — Matola Gare" },
+    { property: "og:description", content: "Publicações guardadas na sua conta Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Favoritos,
 });
 

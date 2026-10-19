@@ -25,8 +25,8 @@ const QUICK = [
   { to: "/sala-do-conhecimento", label: "Sala do Conhecimento", desc: "Aulas, palestras e vídeos", icon: GraduationCap, key: "knowledge" },
   { to: "/galeria", label: "Galeria", desc: "Fotos e momentos da escola", icon: Images, key: "gallery" },
   { to: "/noticias", label: "Notícias", desc: "Comunicados e avisos", icon: Newspaper, key: "news" },
-  { to: "/visitar", label: "Visitar a Escola", desc: "Missão, visão e contactos", icon: School },
-  { to: "/localizacao", label: "Localização", desc: "Como chegar à escola", icon: MapPin },
+  { to: "/visitar", label: "Visitar a Escola", desc: "Missão, visão e contactos", icon: School, key: undefined },
+  { to: "/localizacao", label: "Localização", desc: "Como chegar à escola", icon: MapPin, key: undefined },
 ] as const;
 
 function Index() {
@@ -197,7 +197,7 @@ function Index() {
           {(highlights?.news.length ?? 0) > 0 && (
             <HighlightBlock title="Últimas Notícias" to="/noticias" icon={Newspaper}>
               <div className="grid gap-4 md:grid-cols-3">
-                {highlights!.news.map((n) => (
+                {highlights?.news.map((n) => (
                   <Link key={n.id} to="/noticias" className="surface-card surface-card-hover overflow-hidden group animate-fade-up">
                     {n.image_url ? (
                       <div className="aspect-video overflow-hidden bg-surface-variant">
@@ -221,7 +221,7 @@ function Index() {
           {(highlights?.knowledge.length ?? 0) > 0 && (
             <HighlightBlock title="Sala do Conhecimento" to="/sala-do-conhecimento" icon={GraduationCap}>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {highlights!.knowledge.map((k) => (
+                {highlights?.knowledge.map((k) => (
                   <ContentCard
                     key={k.id}
                     item={{
@@ -242,7 +242,7 @@ function Index() {
           {(highlights?.library.length ?? 0) > 0 && (
             <HighlightBlock title="Biblioteca" to="/biblioteca" icon={BookOpen}>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {highlights!.library.map((l) => (
+                {highlights?.library.map((l) => (
                   <ContentCard
                     key={l.id}
                     item={{
@@ -265,7 +265,7 @@ function Index() {
           {(highlights?.gallery.length ?? 0) > 0 && (
             <HighlightBlock title="Galeria" to="/galeria" icon={Images}>
               <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-                {highlights!.gallery.map((g) => (
+                {highlights?.gallery.map((g) => (
                   <Link key={g.id} to="/galeria" className="aspect-square overflow-hidden rounded-2xl bg-surface-variant group animate-fade-up">
                     {g.image_url && (
                       <img src={g.image_url} alt={g.title ?? "Galeria"} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
