@@ -5,3 +5,4 @@
 - [ ] Acrescentar publicações recentes e atualização manual ao painel.
 - [ ] Verificar e corrigir a criação de utilizadores e administradores no painel.
 - [ ] Verificar navegação, funcionamento e apresentação em telemóveis.
+- [ ] Corrigir a localização da escola e acrescentar opções úteis de chegada.
