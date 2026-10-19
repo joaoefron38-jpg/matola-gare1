@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { createUserAsAdmin, removeUserAsAdmin, setUserAdminAsAdmin, updateUserPasswordAsAdmin } from "@/lib/admin.functions";
 import { Shield, ShieldOff, UserPlus, UserCog, Trash2, KeyRound, Search } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin/utilizadores")({ component: Users });
 
@@ -31,6 +32,8 @@ function Users() {
         supabase.from("profiles").select("*").order("created_at", { ascending: false }),
         supabase.from("user_roles").select("*"),
       ]);
+      if (profiles.error) throw profiles.error;
+      if (roles.error) throw roles.error;
       const roleMap = new Map<string, string[]>();
       (roles.data ?? []).forEach((r) => {
         const arr = roleMap.get(r.user_id) ?? [];
@@ -103,22 +106,22 @@ function Users() {
     <div className="animate-fade-up space-y-4">
       <h2 className="text-xl font-semibold">Utilizadores</h2>
 
-      <div className="surface-card p-4 space-y-3">
+      <form onSubmit={(event) => { event.preventDefault(); void createUser(); }} className="surface-card p-4 space-y-3">
         <div className="text-sm font-medium flex items-center gap-2"><UserCog className="w-4 h-4" /> Criar novo utilizador (com email e senha)</div>
         <div className="grid gap-2 md:grid-cols-4">
           <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Nome completo" className="h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" />
-          <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="Email" type="email" className="h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" />
-          <input value={newPass} onChange={(e) => setNewPass(e.target.value)} placeholder="Senha (6+)" type="text" className="h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" />
+          <input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="Email" type="email" required autoComplete="off" className="min-w-0 h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" />
+          <input value={newPass} onChange={(e) => setNewPass(e.target.value)} placeholder="Senha (6+)" type="password" required minLength={6} autoComplete="new-password" className="min-w-0 h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" />
           <div className="flex items-center gap-2">
             <label className="flex items-center gap-2 text-sm flex-1">
               <input type="checkbox" checked={newIsAdmin} onChange={(e) => setNewIsAdmin(e.target.checked)} /> Admin
             </label>
-            <button onClick={createUser} disabled={creating} className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground text-sm disabled:opacity-50">
+            <Button type="submit" disabled={creating} className="h-10 rounded-full">
               <UserPlus className="w-4 h-4" /> {creating ? "..." : "Criar"}
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
+      </form>
 
       <div className="surface-card p-4 flex flex-wrap gap-2 items-center">
         <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email para promover a admin (utilizador existente)" className="flex-1 min-w-64 h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary" />
@@ -166,7 +169,7 @@ function Users() {
                       value={passwords[u.id] ?? ""}
                       onChange={(e) => setPasswords((current) => ({ ...current, [u.id]: e.target.value }))}
                       placeholder="Nova senha (opcional)"
-                      type="text"
+                      type="password"
                       className="h-10 rounded-full bg-surface-variant px-4 outline-none focus:ring-2 focus:ring-primary flex-1"
                     />
                     <button onClick={() => resetPassword(u.id)} className="inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-full bg-surface-variant text-sm">
