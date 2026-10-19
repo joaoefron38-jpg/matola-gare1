@@ -1,7 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CrudSection } from "@/components/admin/CrudSection";
 
-export const Route = createFileRoute("/admin/biblioteca")({ component: () => (
+export const Route = createFileRoute("/admin/biblioteca")({ head: () => ({ meta: [
+    { title: "Biblioteca — Administração Matola Gare" },
+    { name: "description", content: "Gestão dos livros e documentos publicados pela escola." },
+    { property: "og:title", content: "Biblioteca — Administração Matola Gare" },
+    { property: "og:description", content: "Gestão dos livros e documentos publicados pela escola." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }), component: () => (
   <CrudSection table="library_items" title="Gerir Biblioteca" fields={[
     { name: "title", label: "Título", required: true },
     { name: "description", label: "Descrição", type: "textarea" },

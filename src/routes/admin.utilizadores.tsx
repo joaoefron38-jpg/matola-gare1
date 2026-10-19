@@ -8,7 +8,14 @@ import { Shield, ShieldOff, UserPlus, UserCog, Trash2, KeyRound, Search } from "
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/admin/utilizadores")({ component: Users });
+export const Route = createFileRoute("/admin/utilizadores")({ head: () => ({ meta: [
+    { title: "Utilizadores — Administração Matola Gare" },
+    { name: "description", content: "Gestão de contas e administradores da Matola Gare." },
+    { property: "og:title", content: "Utilizadores — Administração Matola Gare" },
+    { property: "og:description", content: "Gestão de contas e administradores da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }), component: Users });
 
 function Users() {
   const qc = useQueryClient();

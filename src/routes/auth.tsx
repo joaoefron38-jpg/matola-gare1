@@ -8,7 +8,14 @@ import { toast } from "sonner";
 
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Entrar — Matola Gare" }] }),
+  head: () => ({ meta: [
+    { title: "Entrar — Matola Gare" },
+    { name: "description", content: "Acesso administrativo à Biblioteca Digital Matola Gare." },
+    { property: "og:title", content: "Entrar — Matola Gare" },
+    { property: "og:description", content: "Acesso administrativo à Biblioteca Digital Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: Auth,
 });
 

@@ -24,7 +24,6 @@ import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiDirectionsRouteImport } from './routes/api/directions'
 import { Route as AdminUtilizadoresRouteImport } from './routes/admin.utilizadores'
 import { Route as AdminSalaRouteImport } from './routes/admin.sala'
 import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
@@ -110,11 +109,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiDirectionsRoute = ApiDirectionsRouteImport.update({
-  id: '/api/directions',
-  path: '/api/directions',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminUtilizadoresRoute = AdminUtilizadoresRouteImport.update({
   id: '/utilizadores',
   path: '/utilizadores',
@@ -185,7 +179,6 @@ export interface FileRoutesByFullPath {
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/sala': typeof AdminSalaRoute
   '/admin/utilizadores': typeof AdminUtilizadoresRoute
-  '/api/directions': typeof ApiDirectionsRoute
   '/ver/$type/$id': typeof VerTypeIdRoute
 }
 export interface FileRoutesByTo {
@@ -212,7 +205,6 @@ export interface FileRoutesByTo {
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/sala': typeof AdminSalaRoute
   '/admin/utilizadores': typeof AdminUtilizadoresRoute
-  '/api/directions': typeof ApiDirectionsRoute
   '/ver/$type/$id': typeof VerTypeIdRoute
 }
 export interface FileRoutesById {
@@ -240,7 +232,6 @@ export interface FileRoutesById {
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/sala': typeof AdminSalaRoute
   '/admin/utilizadores': typeof AdminUtilizadoresRoute
-  '/api/directions': typeof ApiDirectionsRoute
   '/ver/$type/$id': typeof VerTypeIdRoute
 }
 export interface FileRouteTypes {
@@ -269,7 +260,6 @@ export interface FileRouteTypes {
     | '/admin/noticias'
     | '/admin/sala'
     | '/admin/utilizadores'
-    | '/api/directions'
     | '/ver/$type/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -296,7 +286,6 @@ export interface FileRouteTypes {
     | '/admin/noticias'
     | '/admin/sala'
     | '/admin/utilizadores'
-    | '/api/directions'
     | '/ver/$type/$id'
   id:
     | '__root__'
@@ -323,7 +312,6 @@ export interface FileRouteTypes {
     | '/admin/noticias'
     | '/admin/sala'
     | '/admin/utilizadores'
-    | '/api/directions'
     | '/ver/$type/$id'
   fileRoutesById: FileRoutesById
 }
@@ -343,7 +331,6 @@ export interface RootRouteChildren {
   SalaDoConhecimentoRoute: typeof SalaDoConhecimentoRoute
   SobreRoute: typeof SobreRoute
   VisitarRoute: typeof VisitarRoute
-  ApiDirectionsRoute: typeof ApiDirectionsRoute
   VerTypeIdRoute: typeof VerTypeIdRoute
 }
 
@@ -454,13 +441,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/directions': {
-      id: '/api/directions'
-      path: '/api/directions'
-      fullPath: '/api/directions'
-      preLoaderRoute: typeof ApiDirectionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/utilizadores': {
       id: '/admin/utilizadores'
       path: '/utilizadores'
@@ -567,7 +547,6 @@ const rootRouteChildren: RootRouteChildren = {
   SalaDoConhecimentoRoute: SalaDoConhecimentoRoute,
   SobreRoute: SobreRoute,
   VisitarRoute: VisitarRoute,
-  ApiDirectionsRoute: ApiDirectionsRoute,
   VerTypeIdRoute: VerTypeIdRoute,
 }
 export const routeTree = rootRouteImport

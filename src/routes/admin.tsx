@@ -8,7 +8,14 @@ import { useAuth } from "@/hooks/use-auth";
 import { LayoutDashboard, FileText, Users, MapPin, Info, Images, GraduationCap, BookOpen, Newspaper, Circle, MessageSquare, ArrowRight, PlusCircle, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Painel — Matola Gare" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [
+    { title: "Painel — Matola Gare" },
+    { name: "description", content: "Gestão de publicações e utilizadores da Matola Gare." },
+    { property: "og:title", content: "Painel — Matola Gare" },
+    { property: "og:description", content: "Gestão de publicações e utilizadores da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ] }),
   component: AdminLayout,
 });
 

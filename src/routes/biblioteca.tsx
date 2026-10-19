@@ -6,12 +6,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/biblioteca")({
-  head: () => ({
-    meta: [
-      { title: "Biblioteca — Matola Gare" },
-      { name: "description", content: "Livros, apostilas, PDFs e materiais educativos da Escola Secundária da Matola Gare." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Biblioteca — Matola Gare" },
+    { name: "description", content: "Livros, apostilas, PDFs e materiais educativos da Escola Secundária da Matola Gare." },
+    { property: "og:title", content: "Biblioteca — Matola Gare" },
+    { property: "og:description", content: "Livros, apostilas, PDFs e materiais educativos da Escola Secundária da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Biblioteca,
 });
 

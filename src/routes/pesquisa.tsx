@@ -8,7 +8,14 @@ import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/pesquisa")({
   validateSearch: (s: Record<string, unknown>) => ({ q: typeof s.q === "string" ? s.q : "" }),
-  head: () => ({ meta: [{ title: "Pesquisar — Matola Gare" }] }),
+  head: () => ({ meta: [
+    { title: "Pesquisar — Matola Gare" },
+    { name: "description", content: "Pesquisa de livros, vídeos e notícias da Matola Gare." },
+    { property: "og:title", content: "Pesquisar — Matola Gare" },
+    { property: "og:description", content: "Pesquisa de livros, vídeos e notícias da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Pesquisa,
 });
 

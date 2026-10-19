@@ -5,12 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Mail, Phone, MapPin, Clock, Facebook, Instagram, Youtube, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/sobre")({
-  head: () => ({
-    meta: [
-      { title: "Sobre a Escola — Matola Gare" },
-      { name: "description", content: "História, missão, visão e valores da Escola Secundária da Matola Gare." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Sobre a Escola — Matola Gare" },
+    { name: "description", content: "História, missão, visão e valores da Escola Secundária da Matola Gare." },
+    { property: "og:title", content: "Sobre a Escola — Matola Gare" },
+    { property: "og:description", content: "História, missão, visão e valores da Escola Secundária da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Sobre,
 });
 

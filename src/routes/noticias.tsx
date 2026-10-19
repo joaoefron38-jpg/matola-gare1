@@ -6,12 +6,14 @@ import { Newspaper, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/noticias")({
-  head: () => ({
-    meta: [
-      { title: "Notícias e Avisos — Matola Gare" },
-      { name: "description", content: "Comunicados, avisos e novidades da Escola Secundária da Matola Gare." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Notícias e Avisos — Matola Gare" },
+    { name: "description", content: "Comunicados, avisos e novidades da Escola Secundária da Matola Gare." },
+    { property: "og:title", content: "Notícias e Avisos — Matola Gare" },
+    { property: "og:description", content: "Comunicados, avisos e novidades da Escola Secundária da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Noticias,
 });
 

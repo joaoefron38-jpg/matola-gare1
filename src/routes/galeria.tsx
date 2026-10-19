@@ -6,12 +6,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Images, X } from "lucide-react";
 
 export const Route = createFileRoute("/galeria")({
-  head: () => ({
-    meta: [
-      { title: "Galeria — Matola Gare" },
-      { name: "description", content: "Galeria de fotos e vídeos da Escola Secundária da Matola Gare." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Galeria — Matola Gare" },
+    { name: "description", content: "Galeria de fotos e vídeos da Escola Secundária da Matola Gare." },
+    { property: "og:title", content: "Galeria — Matola Gare" },
+    { property: "og:description", content: "Galeria de fotos e vídeos da Escola Secundária da Matola Gare." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+    
+  ] }),
   component: Galeria,
 });
 
