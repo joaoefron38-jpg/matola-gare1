@@ -2,11 +2,12 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
+import { usePushNotifications } from "@/hooks/use-push";
 import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, Menu, X, Search,
-  Moon, Sun, LogOut, LayoutDashboard, LayoutGrid, Download,
+  Moon, Sun, LogOut, LayoutDashboard, LayoutGrid, Download, Bell, BellOff,
 } from "lucide-react";
 
 const NAV = [

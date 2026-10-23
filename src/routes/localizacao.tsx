@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { calculateSchoolRoute } from "@/lib/location.functions";
+import { generateSchoolGuidance, } from "@/lib/guidance.functions";
 import { mapsDirectionsUrl, validCoordinates, type TravelMode } from "@/lib/location";
-import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone } from "lucide-react";
+import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 declare global { interface Window { google: any; initMatolaMap?: () => void } }
