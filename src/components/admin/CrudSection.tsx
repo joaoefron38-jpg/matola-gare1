@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { notifyPublication } from "@/lib/push.functions";
-import { Plus, Trash2, Save, X, Pencil, BellRing } from "lucide-react";
+import { Plus, Trash2, Save, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { FileUpload } from "./FileUpload";
 
