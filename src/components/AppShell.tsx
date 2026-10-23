@@ -24,6 +24,7 @@ const NAV = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin, user, signOut } = useAuth();
+  const push = usePushNotifications();
   const { theme, mounted, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");

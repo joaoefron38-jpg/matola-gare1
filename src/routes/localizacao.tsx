@@ -28,6 +28,13 @@ const MODES = [{ value: "DRIVE", label: "Carro", icon: Car }, { value: "WALK", l
 
 function Localizacao() {
   const { user } = useAuth();
+  const askGuidance = useServerFn(generateSchoolGuidance);
+  const [gStart, setGStart] = useState("");
+  const [gNeeds, setGNeeds] = useState("");
+  const [gMode, setGMode] = useState<"DRIVE" | "WALK" | "BICYCLE" | "ANY">("ANY");
+  const [gLoading, setGLoading] = useState(false);
+  const [gText, setGText] = useState("");
+  const [gError, setGError] = useState("");
   const { data: school, isPending, isError, refetch } = useQuery({
     queryKey: ["school_info"], queryFn: async () => {
       const { data, error } = await supabase.from("school_info").select("*").eq("id", 1).maybeSingle();
