@@ -9,94 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VisitarRouteImport } from './routes/visitar'
-import { Route as SobreRouteImport } from './routes/sobre'
-import { Route as SalaDoConhecimentoRouteImport } from './routes/sala-do-conhecimento'
-import { Route as PublicacoesRouteImport } from './routes/publicacoes'
-import { Route as PesquisaRouteImport } from './routes/pesquisa'
-import { Route as PerfilRouteImport } from './routes/perfil'
-import { Route as NoticiasRouteImport } from './routes/noticias'
-import { Route as LocalizacaoRouteImport } from './routes/localizacao'
-import { Route as GaleriaRouteImport } from './routes/galeria'
-import { Route as FavoritosRouteImport } from './routes/favoritos'
-import { Route as DownloadsRouteImport } from './routes/downloads'
-import { Route as BibliotecaRouteImport } from './routes/biblioteca'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminUtilizadoresRouteImport } from './routes/admin.utilizadores'
-import { Route as AdminSalaRouteImport } from './routes/admin.sala'
-import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
-import { Route as AdminLocalizacaoRouteImport } from './routes/admin.localizacao'
-import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
-import { Route as AdminEscolaRouteImport } from './routes/admin.escola'
-import { Route as AdminChatRouteImport } from './routes/admin.chat'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BibliotecaRouteImport } from './routes/biblioteca'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
+import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as LocalizacaoRouteImport } from './routes/localizacao'
+import { Route as NoticiasRouteImport } from './routes/noticias'
+import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as PesquisaRouteImport } from './routes/pesquisa'
+import { Route as PublicacoesRouteImport } from './routes/publicacoes'
+import { Route as SalaDoConhecimentoRouteImport } from './routes/sala-do-conhecimento'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as VisitarRouteImport } from './routes/visitar'
 import { Route as AdminBibliotecaRouteImport } from './routes/admin.biblioteca'
+import { Route as AdminChatRouteImport } from './routes/admin.chat'
+import { Route as AdminEscolaRouteImport } from './routes/admin.escola'
+import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
+import { Route as AdminLocalizacaoRouteImport } from './routes/admin.localizacao'
+import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
+import { Route as AdminSalaRouteImport } from './routes/admin.sala'
+import { Route as AdminUtilizadoresRouteImport } from './routes/admin.utilizadores'
 import { Route as VerTypeIdRouteImport } from './routes/ver.$type.$id'
 
-const VisitarRoute = VisitarRouteImport.update({
-  id: '/visitar',
-  path: '/visitar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SobreRoute = SobreRouteImport.update({
-  id: '/sobre',
-  path: '/sobre',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SalaDoConhecimentoRoute = SalaDoConhecimentoRouteImport.update({
-  id: '/sala-do-conhecimento',
-  path: '/sala-do-conhecimento',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublicacoesRoute = PublicacoesRouteImport.update({
-  id: '/publicacoes',
-  path: '/publicacoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PesquisaRoute = PesquisaRouteImport.update({
-  id: '/pesquisa',
-  path: '/pesquisa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PerfilRoute = PerfilRouteImport.update({
-  id: '/perfil',
-  path: '/perfil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoticiasRoute = NoticiasRouteImport.update({
-  id: '/noticias',
-  path: '/noticias',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LocalizacaoRoute = LocalizacaoRouteImport.update({
-  id: '/localizacao',
-  path: '/localizacao',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GaleriaRoute = GaleriaRouteImport.update({
-  id: '/galeria',
-  path: '/galeria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FavoritosRoute = FavoritosRouteImport.update({
-  id: '/favoritos',
-  path: '/favoritos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DownloadsRoute = DownloadsRouteImport.update({
-  id: '/downloads',
-  path: '/downloads',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BibliotecaRoute = BibliotecaRouteImport.update({
-  id: '/biblioteca',
-  path: '/biblioteca',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -104,39 +44,74 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminUtilizadoresRoute = AdminUtilizadoresRouteImport.update({
-  id: '/utilizadores',
-  path: '/utilizadores',
-  getParentRoute: () => AdminRoute,
+const BibliotecaRoute = BibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminSalaRoute = AdminSalaRouteImport.update({
-  id: '/sala',
-  path: '/sala',
-  getParentRoute: () => AdminRoute,
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
-  id: '/noticias',
-  path: '/noticias',
-  getParentRoute: () => AdminRoute,
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminLocalizacaoRoute = AdminLocalizacaoRouteImport.update({
-  id: '/localizacao',
-  path: '/localizacao',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminGaleriaRoute = AdminGaleriaRouteImport.update({
+const GaleriaRoute = GaleriaRouteImport.update({
   id: '/galeria',
   path: '/galeria',
-  getParentRoute: () => AdminRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminEscolaRoute = AdminEscolaRouteImport.update({
-  id: '/escola',
-  path: '/escola',
+const LocalizacaoRoute = LocalizacaoRouteImport.update({
+  id: '/localizacao',
+  path: '/localizacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasRoute = NoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PesquisaRoute = PesquisaRouteImport.update({
+  id: '/pesquisa',
+  path: '/pesquisa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicacoesRoute = PublicacoesRouteImport.update({
+  id: '/publicacoes',
+  path: '/publicacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalaDoConhecimentoRoute = SalaDoConhecimentoRouteImport.update({
+  id: '/sala-do-conhecimento',
+  path: '/sala-do-conhecimento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisitarRoute = VisitarRouteImport.update({
+  id: '/visitar',
+  path: '/visitar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBibliotecaRoute = AdminBibliotecaRouteImport.update({
+  id: '/biblioteca',
+  path: '/biblioteca',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminChatRoute = AdminChatRouteImport.update({
@@ -144,9 +119,34 @@ const AdminChatRoute = AdminChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminBibliotecaRoute = AdminBibliotecaRouteImport.update({
-  id: '/biblioteca',
-  path: '/biblioteca',
+const AdminEscolaRoute = AdminEscolaRouteImport.update({
+  id: '/escola',
+  path: '/escola',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminGaleriaRoute = AdminGaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLocalizacaoRoute = AdminLocalizacaoRouteImport.update({
+  id: '/localizacao',
+  path: '/localizacao',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSalaRoute = AdminSalaRouteImport.update({
+  id: '/sala',
+  path: '/sala',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUtilizadoresRoute = AdminUtilizadoresRouteImport.update({
+  id: '/utilizadores',
+  path: '/utilizadores',
   getParentRoute: () => AdminRoute,
 } as any)
 const VerTypeIdRoute = VerTypeIdRouteImport.update({
@@ -336,95 +336,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/visitar': {
-      id: '/visitar'
-      path: '/visitar'
-      fullPath: '/visitar'
-      preLoaderRoute: typeof VisitarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sobre': {
-      id: '/sobre'
-      path: '/sobre'
-      fullPath: '/sobre'
-      preLoaderRoute: typeof SobreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sala-do-conhecimento': {
-      id: '/sala-do-conhecimento'
-      path: '/sala-do-conhecimento'
-      fullPath: '/sala-do-conhecimento'
-      preLoaderRoute: typeof SalaDoConhecimentoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publicacoes': {
-      id: '/publicacoes'
-      path: '/publicacoes'
-      fullPath: '/publicacoes'
-      preLoaderRoute: typeof PublicacoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pesquisa': {
-      id: '/pesquisa'
-      path: '/pesquisa'
-      fullPath: '/pesquisa'
-      preLoaderRoute: typeof PesquisaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/perfil': {
-      id: '/perfil'
-      path: '/perfil'
-      fullPath: '/perfil'
-      preLoaderRoute: typeof PerfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/noticias': {
-      id: '/noticias'
-      path: '/noticias'
-      fullPath: '/noticias'
-      preLoaderRoute: typeof NoticiasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/localizacao': {
-      id: '/localizacao'
-      path: '/localizacao'
-      fullPath: '/localizacao'
-      preLoaderRoute: typeof LocalizacaoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/galeria': {
-      id: '/galeria'
-      path: '/galeria'
-      fullPath: '/galeria'
-      preLoaderRoute: typeof GaleriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/favoritos': {
-      id: '/favoritos'
-      path: '/favoritos'
-      fullPath: '/favoritos'
-      preLoaderRoute: typeof FavoritosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/downloads': {
-      id: '/downloads'
-      path: '/downloads'
-      fullPath: '/downloads'
-      preLoaderRoute: typeof DownloadsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/biblioteca': {
-      id: '/biblioteca'
-      path: '/biblioteca'
-      fullPath: '/biblioteca'
-      preLoaderRoute: typeof BibliotecaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -434,53 +350,102 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/utilizadores': {
-      id: '/admin/utilizadores'
-      path: '/utilizadores'
-      fullPath: '/admin/utilizadores'
-      preLoaderRoute: typeof AdminUtilizadoresRouteImport
-      parentRoute: typeof AdminRoute
+    '/biblioteca': {
+      id: '/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/biblioteca'
+      preLoaderRoute: typeof BibliotecaRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/sala': {
-      id: '/admin/sala'
-      path: '/sala'
-      fullPath: '/admin/sala'
-      preLoaderRoute: typeof AdminSalaRouteImport
-      parentRoute: typeof AdminRoute
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/noticias': {
-      id: '/admin/noticias'
-      path: '/noticias'
-      fullPath: '/admin/noticias'
-      preLoaderRoute: typeof AdminNoticiasRouteImport
-      parentRoute: typeof AdminRoute
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/localizacao': {
-      id: '/admin/localizacao'
-      path: '/localizacao'
-      fullPath: '/admin/localizacao'
-      preLoaderRoute: typeof AdminLocalizacaoRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/galeria': {
-      id: '/admin/galeria'
+    '/galeria': {
+      id: '/galeria'
       path: '/galeria'
-      fullPath: '/admin/galeria'
-      preLoaderRoute: typeof AdminGaleriaRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/escola': {
-      id: '/admin/escola'
-      path: '/escola'
-      fullPath: '/admin/escola'
-      preLoaderRoute: typeof AdminEscolaRouteImport
+    '/localizacao': {
+      id: '/localizacao'
+      path: '/localizacao'
+      fullPath: '/localizacao'
+      preLoaderRoute: typeof LocalizacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias': {
+      id: '/noticias'
+      path: '/noticias'
+      fullPath: '/noticias'
+      preLoaderRoute: typeof NoticiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pesquisa': {
+      id: '/pesquisa'
+      path: '/pesquisa'
+      fullPath: '/pesquisa'
+      preLoaderRoute: typeof PesquisaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publicacoes': {
+      id: '/publicacoes'
+      path: '/publicacoes'
+      fullPath: '/publicacoes'
+      preLoaderRoute: typeof PublicacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sala-do-conhecimento': {
+      id: '/sala-do-conhecimento'
+      path: '/sala-do-conhecimento'
+      fullPath: '/sala-do-conhecimento'
+      preLoaderRoute: typeof SalaDoConhecimentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/visitar': {
+      id: '/visitar'
+      path: '/visitar'
+      fullPath: '/visitar'
+      preLoaderRoute: typeof VisitarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/biblioteca': {
+      id: '/admin/biblioteca'
+      path: '/biblioteca'
+      fullPath: '/admin/biblioteca'
+      preLoaderRoute: typeof AdminBibliotecaRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/chat': {
@@ -490,11 +455,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminChatRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/biblioteca': {
-      id: '/admin/biblioteca'
-      path: '/biblioteca'
-      fullPath: '/admin/biblioteca'
-      preLoaderRoute: typeof AdminBibliotecaRouteImport
+    '/admin/escola': {
+      id: '/admin/escola'
+      path: '/escola'
+      fullPath: '/admin/escola'
+      preLoaderRoute: typeof AdminEscolaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/galeria': {
+      id: '/admin/galeria'
+      path: '/galeria'
+      fullPath: '/admin/galeria'
+      preLoaderRoute: typeof AdminGaleriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/localizacao': {
+      id: '/admin/localizacao'
+      path: '/localizacao'
+      fullPath: '/admin/localizacao'
+      preLoaderRoute: typeof AdminLocalizacaoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/noticias': {
+      id: '/admin/noticias'
+      path: '/noticias'
+      fullPath: '/admin/noticias'
+      preLoaderRoute: typeof AdminNoticiasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sala': {
+      id: '/admin/sala'
+      path: '/sala'
+      fullPath: '/admin/sala'
+      preLoaderRoute: typeof AdminSalaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/utilizadores': {
+      id: '/admin/utilizadores'
+      path: '/utilizadores'
+      fullPath: '/admin/utilizadores'
+      preLoaderRoute: typeof AdminUtilizadoresRouteImport
       parentRoute: typeof AdminRoute
     }
     '/ver/$type/$id': {

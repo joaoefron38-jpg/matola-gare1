@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { calculateSchoolRoute } from "@/lib/location.functions";
+import { generateSchoolGuidance, } from "@/lib/guidance.functions";
 import { mapsDirectionsUrl, validCoordinates, type TravelMode } from "@/lib/location";
-import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone } from "lucide-react";
+import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 declare global { interface Window { google: any; initMatolaMap?: () => void } }
@@ -27,6 +28,13 @@ const MODES = [{ value: "DRIVE", label: "Carro", icon: Car }, { value: "WALK", l
 
 function Localizacao() {
   const { user } = useAuth();
+  const askGuidance = useServerFn(generateSchoolGuidance);
+  const [gStart, setGStart] = useState("");
+  const [gNeeds, setGNeeds] = useState("");
+  const [gMode, setGMode] = useState<"DRIVE" | "WALK" | "BICYCLE" | "ANY">("ANY");
+  const [gLoading, setGLoading] = useState(false);
+  const [gText, setGText] = useState("");
+  const [gError, setGError] = useState("");
   const { data: school, isPending, isError, refetch } = useQuery({
     queryKey: ["school_info"], queryFn: async () => {
       const { data, error } = await supabase.from("school_info").select("*").eq("id", 1).maybeSingle();
@@ -119,6 +127,17 @@ function Localizacao() {
     } catch (e) { if (!(e instanceof Error && e.name === "AbortError")) toast.error("Não foi possível partilhar a localização."); }
   }
 
+  async function askAiGuidance() {
+    if (gStart.trim().length < 5) { toast.error("Descreva o ponto de partida."); return; }
+    setGLoading(true); setGError(""); setGText("");
+    try {
+      const res = await askGuidance({ data: { startingPoint: gStart, needs: gNeeds, mode: gMode } });
+      setGText(res.text);
+    } catch (e) {
+      setGError(e instanceof Error ? e.message : "Não foi possível gerar a orientação.");
+    } finally { setGLoading(false); }
+  }
+
   return <AppShell><div className="mx-auto max-w-6xl px-4 py-8">
     <header className="mb-6"><p className="mb-2 flex items-center gap-2 text-sm text-primary"><MapPin className="h-4 w-4" /> Matola Gare · Maputo</p><h1 className="text-3xl font-bold">Localização da Escola</h1><p className="mt-2 text-muted-foreground">{school?.name || "Escola Secundária da Matola Gare"}</p></header>
     {isError ? <div className="py-8 text-sm text-destructive">Não foi possível carregar a localização. <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button></div> : isPending ? <div className="grid h-80 place-items-center"><Loader2 className="animate-spin text-primary" /></div> : <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -140,5 +159,35 @@ function Localizacao() {
         {school?.schedule && <div className="mt-6 border-t border-border pt-4"><h3 className="flex items-center gap-2 text-sm font-semibold"><Clock className="h-4 w-4 text-primary" /> Horário</h3><p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">{school.schedule}</p></div>}
       </section>
     </div>}
+    <section className="mt-8 rounded-xl border border-border bg-card p-5">
+      <h2 className="flex items-center gap-2 text-lg font-semibold"><Sparkles className="h-5 w-5 text-primary" /> Orientação personalizada</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Descreva de onde vem e o que precisa — o assistente da escola gera orientações para chegar com segurança.</p>
+      <div className="mt-4 grid gap-3">
+        <label className="text-sm block"><span className="mb-1 block text-muted-foreground">Ponto de partida *</span>
+          <input value={gStart} onChange={(e) => setGStart(e.target.value)} placeholder="Ex.: Bairro Fomento, perto do mercado…" maxLength={400} className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
+        </label>
+        <label className="text-sm block"><span className="mb-1 block text-muted-foreground">Necessidades (opcional)</span>
+          <textarea value={gNeeds} onChange={(e) => setGNeeds(e.target.value)} rows={2} maxLength={600} placeholder="Ex.: chego de chapa, tenho aulas às 07h…" className="w-full rounded-lg border border-input bg-background p-3 text-sm outline-none focus:ring-2 focus:ring-primary" />
+        </label>
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-sm"><span className="mb-1 block text-muted-foreground">Meio de transporte</span>
+            <select value={gMode} onChange={(e) => setGMode(e.target.value as typeof gMode)} className="h-11 rounded-lg border border-input bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary">
+              <option value="ANY">Qualquer</option><option value="DRIVE">Carro / chapa</option><option value="WALK">A pé</option><option value="BICYCLE">Bicicleta</option>
+            </select>
+          </label>
+          <Button className="h-11" disabled={gLoading} onClick={() => void askAiGuidance()}>{gLoading ? <Loader2 className="animate-spin" /> : <Sparkles />} Pedir orientação</Button>
+        </div>
+      </div>
+      {gError && <p role="alert" className="mt-4 break-words text-sm text-destructive">{gError}</p>}
+      {gText && (
+        <div className="mt-5 rounded-lg bg-surface-variant p-4">
+          <div className="whitespace-pre-wrap text-sm">{gText}</div>
+          <div className="mt-3 flex gap-2">
+            <Button size="sm" variant="secondary" onClick={async () => { try { await navigator.clipboard.writeText(gText); toast.success("Orientação copiada"); } catch { toast.error("Não foi possível copiar."); } }}><Copy /> Copiar</Button>
+            <Button size="sm" variant="ghost" onClick={() => { setGText(""); setGError(""); }}><RotateCcw /> Limpar</Button>
+          </div>
+        </div>
+      )}
+    </section>
   </div></AppShell>;
 }

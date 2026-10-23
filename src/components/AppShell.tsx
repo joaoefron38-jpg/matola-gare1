@@ -2,11 +2,12 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
+import { usePushNotifications } from "@/hooks/use-push";
 import { useTheme } from "@/hooks/use-theme";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BookOpen, GraduationCap, Images, Newspaper, MapPin, Info, Menu, X, Search,
-  Moon, Sun, LogOut, LayoutDashboard, LayoutGrid, Download,
+  Moon, Sun, LogOut, LayoutDashboard, LayoutGrid, Download, Bell, BellOff,
 } from "lucide-react";
 
 const NAV = [
@@ -23,6 +24,7 @@ const NAV = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isAdmin, user, signOut } = useAuth();
+  const push = usePushNotifications();
   const { theme, mounted, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -94,6 +96,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </form>
 
           <div className="flex items-center gap-1">
+            {push.supported && (
+              <button
+                onClick={() => (push.enabled ? push.disable() : push.enable())}
+                disabled={push.busy}
+                className="p-2 rounded-full hover:bg-accent disabled:opacity-50"
+                title={push.enabled ? "Notificações ativas — desativar" : "Ativar notificações de novas publicações"}
+                aria-label={push.enabled ? "Desativar notificações" : "Ativar notificações"}
+              >
+                {push.enabled ? <Bell className="w-5 h-5 text-primary" /> : <BellOff className="w-5 h-5" />}
+              </button>
+            )}
             <button onClick={toggle} className="p-2 rounded-full hover:bg-accent" aria-label="Alternar tema">
               {mounted ? (theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />) : <Sun className="w-5 h-5 opacity-0" />}
             </button>
