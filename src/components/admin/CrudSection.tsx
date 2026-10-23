@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Trash2, Save, X, Pencil } from "lucide-react";
+import { notifyPublication } from "@/lib/push.functions";
+import { Plus, Trash2, Save, X, Pencil, BellRing } from "lucide-react";
 import { toast } from "sonner";
 import { FileUpload } from "./FileUpload";
+
+const NOTIFY_TABLES = new Set(["library_items", "knowledge_items", "gallery_items", "news_items"]);
 
 export type Field = {
   name: string;
