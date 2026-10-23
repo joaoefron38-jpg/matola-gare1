@@ -12,5 +12,5 @@ declare module "webpush-webcrypto" {
     adminContact?: string;
     ttl?: number;
     urgency?: "high" | "normal" | "low";
-  }): Promise<{ endpoint: string; body: Uint8Array; headers: Record<string, string> }>;
+  }): Promise<{ endpoint: string; body: BodyInit; headers: Record<string, string> }>;
 }
