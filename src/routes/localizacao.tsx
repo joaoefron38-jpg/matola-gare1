@@ -127,6 +127,17 @@ function Localizacao() {
     } catch (e) { if (!(e instanceof Error && e.name === "AbortError")) toast.error("Não foi possível partilhar a localização."); }
   }
 
+  async function askAiGuidance() {
+    if (gStart.trim().length < 5) { toast.error("Descreva o ponto de partida."); return; }
+    setGLoading(true); setGError(""); setGText("");
+    try {
+      const res = await askGuidance({ data: { startingPoint: gStart, needs: gNeeds, mode: gMode } });
+      setGText(res.text);
+    } catch (e) {
+      setGError(e instanceof Error ? e.message : "Não foi possível gerar a orientação.");
+    } finally { setGLoading(false); }
+  }
+
   return <AppShell><div className="mx-auto max-w-6xl px-4 py-8">
     <header className="mb-6"><p className="mb-2 flex items-center gap-2 text-sm text-primary"><MapPin className="h-4 w-4" /> Matola Gare · Maputo</p><h1 className="text-3xl font-bold">Localização da Escola</h1><p className="mt-2 text-muted-foreground">{school?.name || "Escola Secundária da Matola Gare"}</p></header>
     {isError ? <div className="py-8 text-sm text-destructive">Não foi possível carregar a localização. <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button></div> : isPending ? <div className="grid h-80 place-items-center"><Loader2 className="animate-spin text-primary" /></div> : <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">

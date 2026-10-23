@@ -96,6 +96,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </form>
 
           <div className="flex items-center gap-1">
+            {push.supported && (
+              <button
+                onClick={() => (push.enabled ? push.disable() : push.enable())}
+                disabled={push.busy}
+                className="p-2 rounded-full hover:bg-accent disabled:opacity-50"
+                title={push.enabled ? "Notificações ativas — desativar" : "Ativar notificações de novas publicações"}
+                aria-label={push.enabled ? "Desativar notificações" : "Ativar notificações"}
+              >
+                {push.enabled ? <Bell className="w-5 h-5 text-primary" /> : <BellOff className="w-5 h-5" />}
+              </button>
+            )}
             <button onClick={toggle} className="p-2 rounded-full hover:bg-accent" aria-label="Alternar tema">
               {mounted ? (theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />) : <Sun className="w-5 h-5 opacity-0" />}
             </button>
