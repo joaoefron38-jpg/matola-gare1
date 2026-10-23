@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { getRequest } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import type { ModelMessage } from "ai";
 import type { Database } from "@/integrations/supabase/types";
 import { createResponsesCall } from "./ai/responses";
