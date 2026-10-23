@@ -26,6 +26,7 @@ export function CrudSection<T extends Record<string, any>>({
   orderBy?: string;
 }) {
   const qc = useQueryClient();
+  const notify = useServerFn(notifyPublication);
   const [editing, setEditing] = useState<T | null>(null);
   const [creating, setCreating] = useState(false);
 
@@ -52,9 +53,15 @@ export function CrudSection<T extends Record<string, any>>({
       if (error) return toast.error(error.message);
       toast.success("Atualizado");
     } else {
+      const title = ["title", "name", "caption"].map((k) => clean[k]).find((v) => typeof v === "string" && v.trim()) ?? "";
       const { error } = await supabase.from(table as any).insert(clean);
       if (error) return toast.error(error.message);
       toast.success("Criado");
+      if (NOTIFY_TABLES.has(table)) {
+        notify({ data: { table, title } })
+          .then((r) => { if (r && r.sent > 0) toast.info(`Notificação enviada para ${r.sent} dispositivo(s)`); })
+          .catch(() => {});
+      }
     }
     setEditing(null); setCreating(false);
     qc.invalidateQueries({ queryKey: [table] });
