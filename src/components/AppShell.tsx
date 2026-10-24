@@ -96,7 +96,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </form>
 
           <div className="flex items-center gap-1">
-            {push.supported && (
+            {mounted && push.supported && (
               <button
                 onClick={() => (push.enabled ? push.disable() : push.enable())}
                 disabled={push.busy}
