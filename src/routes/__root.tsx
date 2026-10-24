@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent as unknown as NonNullable<
-    React.ComponentProps<typeof RootRoute>["errorComponent"]
+    React.ComponentProps<typeof Route>["errorComponent"]
   >,
 });
 
