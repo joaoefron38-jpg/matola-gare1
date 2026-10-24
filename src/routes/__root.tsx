@@ -92,7 +92,7 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function RootComponent() {
+function RootComponent(): JSX.Element {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useEffect(() => {
