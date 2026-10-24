@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet, createRootRouteWithContext, useRouter, HeadContent, Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
@@ -77,7 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
+  errorComponent: ErrorComponentLazy,
 });
 
 function RootShell({ children }: { children: ReactNode }) {
