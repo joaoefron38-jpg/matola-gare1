@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet, createRootRouteWithContext, useRouter, HeadContent, Scripts,
 } from "@tanstack/react-router";
-import { lazy, useEffect, type ReactNode } from "react";
+import { lazy, useEffect, type ReactElement, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
@@ -26,7 +26,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
@@ -94,7 +94,7 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function RootComponent(): React.ReactElement {
+function RootComponent(): ReactElement {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useEffect(() => {
