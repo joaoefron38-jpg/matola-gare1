@@ -42,9 +42,17 @@ export function usePushNotifications() {
     if (!supported) return;
     setBusy(true);
     try {
+      let inIframe = false;
+      try { inIframe = window.self !== window.top; } catch { inIframe = true; }
+      if (inIframe) {
+        throw new Error("As notificações só podem ser ativadas na app publicada, aberta diretamente no navegador.");
+      }
       const permission = await Notification.requestPermission();
+      if (permission === "denied") {
+        throw new Error("As notificações estão bloqueadas para este site. Desbloqueia-as nas definições do navegador (ícone de cadeado no endereço).");
+      }
       if (permission !== "granted") {
-        throw new Error("Autorização recusada. Ative as notificações nas definições do navegador.");
+        throw new Error("Autorização recusada. Tenta novamente ou ativa as notificações nas definições do navegador.");
       }
       const registration = await navigator.serviceWorker.register("/sw.js");
       await navigator.serviceWorker.ready;
@@ -67,6 +75,12 @@ export function usePushNotifications() {
       );
       if (error) throw error;
       setEnabled(true);
+    } catch (e) {
+      const msg = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      if (/permission denied|NotAllowedError/i.test(msg)) {
+        throw new Error("O navegador bloqueou as notificações para este site. Toca no ícone de cadeado na barra de endereço e permite as notificações, depois tenta de novo.");
+      }
+      throw e;
     } finally {
       setBusy(false);
     }
