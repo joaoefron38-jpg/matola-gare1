@@ -98,7 +98,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-1">
             {mounted && push.supported && (
               <button
-                onClick={() => (push.enabled ? push.disable() : push.enable())}
+                onClick={() => {
+                  if (push.busy) return;
+                  if (push.enabled) {
+                    push.disable()
+                      .then(() => toast.success("Notificações desativadas"))
+                      .catch((e) => toast.error(e instanceof Error ? e.message : "Não foi possível desativar as notificações."));
+                  } else {
+                    push.enable()
+                      .then(() => toast.success("Notificações ativadas — vais receber avisos de novas publicações"))
+                      .catch((e) => toast.error(e instanceof Error ? e.message : "Não foi possível ativar as notificações."));
+                  }
+                }}
                 disabled={push.busy}
                 className="p-2 rounded-full hover:bg-accent disabled:opacity-50"
                 title={push.enabled ? "Notificações ativas — desativar" : "Ativar notificações de novas publicações"}
