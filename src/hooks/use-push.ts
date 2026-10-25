@@ -75,6 +75,12 @@ export function usePushNotifications() {
       );
       if (error) throw error;
       setEnabled(true);
+    } catch (e) {
+      const msg = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+      if (/permission denied|NotAllowedError/i.test(msg)) {
+        throw new Error("O navegador bloqueou as notificações para este site. Toca no ícone de cadeado na barra de endereço e permite as notificações, depois tenta de novo.");
+      }
+      throw e;
     } finally {
       setBusy(false);
     }
