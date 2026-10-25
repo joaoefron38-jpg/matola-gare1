@@ -6,6 +6,7 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { calculateSchoolRoute } from "@/lib/location.functions";
 import { mapsDirectionsUrl, validCoordinates, type TravelMode } from "@/lib/location";
 import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone, Search } from "lucide-react";
 import { toast } from "sonner";
