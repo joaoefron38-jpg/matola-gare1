@@ -6,10 +6,8 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { calculateSchoolRoute } from "@/lib/location.functions";
-import { generateSchoolGuidance, } from "@/lib/guidance.functions";
 import { mapsDirectionsUrl, validCoordinates, type TravelMode } from "@/lib/location";
-import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone, Sparkles } from "lucide-react";
+import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone, Search } from "lucide-react";
 import { toast } from "sonner";
 
 declare global { interface Window { google: any; initMatolaMap?: () => void } }
@@ -28,13 +26,7 @@ const MODES = [{ value: "DRIVE", label: "Carro", icon: Car }, { value: "WALK", l
 
 function Localizacao() {
   const { user } = useAuth();
-  const askGuidance = useServerFn(generateSchoolGuidance);
-  const [gStart, setGStart] = useState("");
-  const [gNeeds, setGNeeds] = useState("");
-  const [gMode, setGMode] = useState<"DRIVE" | "WALK" | "BICYCLE" | "ANY">("ANY");
-  const [gLoading, setGLoading] = useState(false);
-  const [gText, setGText] = useState("");
-  const [gError, setGError] = useState("");
+  const originInputRef = useRef<HTMLInputElement>(null);
   const { data: school, isPending, isError, refetch } = useQuery({
     queryKey: ["school_info"], queryFn: async () => {
       const { data, error } = await supabase.from("school_info").select("*").eq("id", 1).maybeSingle();
@@ -71,7 +63,7 @@ function Localizacao() {
     let script = document.getElementById("matola-map-script") as HTMLScriptElement | null;
     if (!script) {
       script = document.createElement("script"); script.id = "matola-map-script";
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&callback=initMatolaMap${tracking ? `&channel=${tracking}` : ""}`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&libraries=places&callback=initMatolaMap${tracking ? `&channel=${tracking}` : ""}`;
       script.async = true; script.onerror = () => setMapError(true); document.head.appendChild(script);
     }
     const timer = window.setTimeout(() => { if (!window.google?.maps) setMapError(true); }, 15000);
@@ -127,16 +119,6 @@ function Localizacao() {
     } catch (e) { if (!(e instanceof Error && e.name === "AbortError")) toast.error("Não foi possível partilhar a localização."); }
   }
 
-  async function askAiGuidance() {
-    if (gStart.trim().length < 5) { toast.error("Descreva o ponto de partida."); return; }
-    setGLoading(true); setGError(""); setGText("");
-    try {
-      const res = await askGuidance({ data: { startingPoint: gStart, needs: gNeeds, mode: gMode } });
-      setGText(res.text);
-    } catch (e) {
-      setGError(e instanceof Error ? e.message : "Não foi possível gerar a orientação.");
-    } finally { setGLoading(false); }
-  }
 
   return <AppShell><div className="mx-auto max-w-6xl px-4 py-8">
     <header className="mb-6"><p className="mb-2 flex items-center gap-2 text-sm text-primary"><MapPin className="h-4 w-4" /> Matola Gare · Maputo</p><h1 className="text-3xl font-bold">Localização da Escola</h1><p className="mt-2 text-muted-foreground">{school?.name || "Escola Secundária da Matola Gare"}</p></header>
