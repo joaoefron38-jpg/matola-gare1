@@ -6,9 +6,9 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { calculateSchoolRoute } from "@/lib/location.functions";
+import { autocompleteAddressSuggestions, calculateSchoolRoute } from "@/lib/location.functions";
 import { mapsDirectionsUrl, validCoordinates, type TravelMode } from "@/lib/location";
-import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Loader2, RotateCcw, Layers, Phone, Search } from "lucide-react";
+import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Locate, Loader2, RotateCcw, Layers, Phone, Search } from "lucide-react";
 import { toast } from "sonner";
 
 declare global { interface Window { google: any; initMatolaMap?: () => void } }
@@ -39,6 +39,9 @@ function Localizacao() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const polylineRef = useRef<any>(null);
+  const userMarkerRef = useRef<any>(null);
+  const accuracyCircleRef = useRef<any>(null);
+  const sessionTokenRef = useRef<string>("");
   const [loaded, setLoaded] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [origin, setOrigin] = useState("");
@@ -49,6 +52,10 @@ function Localizacao() {
   const [calculating, setCalculating] = useState(false);
   const [routeError, setRouteError] = useState("");
   const [route, setRoute] = useState<Awaited<ReturnType<typeof calculate>> | null>(null);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number; accuracy: number } | null>(null);
+  const [suggestions, setSuggestions] = useState<{ placeId: string; text: string }[]>([]);
+  const [suggesting, setSuggesting] = useState(false);
+  const [originFocused, setOriginFocused] = useState(false);
   const lat = school?.latitude, lng = school?.longitude;
   const hasCoordinates = lat != null && lng != null && validCoordinates(lat, lng);
   const destination = hasCoordinates ? `${lat},${lng}` : `${school?.name || "Escola Secundária da Matola Gare"}, Matola Gare, Moçambique`;
@@ -64,7 +71,7 @@ function Localizacao() {
     let script = document.getElementById("matola-map-script") as HTMLScriptElement | null;
     if (!script) {
       script = document.createElement("script"); script.id = "matola-map-script";
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&libraries=places&callback=initMatolaMap${tracking ? `&channel=${tracking}` : ""}`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&loading=async&callback=initMatolaMap${tracking ? `&channel=${tracking}` : ""}`;
       script.async = true; script.onerror = () => setMapError(true); document.head.appendChild(script);
     }
     const timer = window.setTimeout(() => { if (!window.google?.maps) setMapError(true); }, 15000);
