@@ -73,7 +73,7 @@ export const autocompleteAddressSuggestions = createServerFn({ method: "POST" })
       },
       body: JSON.stringify({
         input: data.input, sessionToken: data.sessionToken, languageCode: "pt",
-        locationBias: { circle: { center: { latitude: -25.9622, longitude: 32.4589 }, radius: 60000 } },
+        locationBias: { circle: { center: { latitude: -25.9622, longitude: 32.4589 }, radius: 50000 } },
       }),
     });
     if (!response.ok) {

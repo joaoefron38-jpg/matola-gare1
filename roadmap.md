@@ -7,4 +7,4 @@
 - [x] Testar o fluxo completo no navegador (orientação IA + sino + notificação).
 - [x] Remover a IA da tela de Localização; adicionar pesquisa de endereço (Google Places) no ponto de partida.
 - [x] Sino de notificações: feedback ao clicar (aviso em português) e mensagem clara quando o navegador bloqueia as notificações.
-- [ ] Testar a entrega real da notificação no Chrome do utilizador (só possível na app publicada; a pré-visualização em iframe bloqueia a permissão).
+- [x] Mostrar a posição exata do utilizador na Localização (marcador + círculo de precisão, "Centrar em mim", ativação automática com permissão já concedida) e sugestões de endereço no servidor.
