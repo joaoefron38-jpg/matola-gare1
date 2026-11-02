@@ -5,10 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/use-auth";
 import { calculateSchoolRoute, searchPlaceCoordinates } from "@/lib/location.functions";
 import { mapsDirectionsUrl, validCoordinates, type TravelMode } from "@/lib/location";
-import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Locate, Loader2, RotateCcw, Layers, Phone } from "lucide-react";
+import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Locate, Loader2, RotateCcw, Layers, Phone, Search } from "lucide-react";
 import { toast } from "sonner";
 
 declare global { interface Window { google: any; initMatolaMap?: () => void } }
@@ -27,7 +26,6 @@ const MODES = [{ value: "DRIVE", label: "Carro", icon: Car }, { value: "WALK", l
 const REFERENCE_ADDRESS = "Alemony Wochanhama & Filhos, Matola, Moçambique";
 
 function Localizacao() {
-  const { user } = useAuth();
   const { data: school, isPending, isError, refetch } = useQuery({
     queryKey: ["school_info"], queryFn: async () => {
       const { data, error } = await supabase.from("school_info").select("*").eq("id", 1).maybeSingle();
@@ -36,12 +34,14 @@ function Localizacao() {
     },
   });
   const calculate = useServerFn(calculateSchoolRoute);
+  const findPlace = useServerFn(searchPlaceCoordinates);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
   const polylineRef = useRef<any>(null);
   const userMarkerRef = useRef<any>(null);
   const accuracyCircleRef = useRef<any>(null);
   const autoLocatedRef = useRef(false);
+  const fallbackOriginRef = useRef<{ latitude: number; longitude: number } | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [mode, setMode] = useState<TravelMode>("DRIVE");
@@ -54,7 +54,7 @@ function Localizacao() {
   const lat = school?.latitude, lng = school?.longitude;
   const hasCoordinates = lat != null && lng != null && validCoordinates(lat, lng);
   const destination = hasCoordinates ? `${lat},${lng}` : `${school?.name || "Escola Secundária da Matola Gare"}, Matola Gare, Moçambique`;
-  const navigationHref = mapsDirectionsUrl(destination, mode, origin);
+  const navigationHref = mapsDirectionsUrl(destination, mode);
   const address = school?.address || "Matola Gare · Cidade da Matola · Província de Maputo · Moçambique";
 
   useEffect(() => {
@@ -101,25 +101,8 @@ function Localizacao() {
     });
   }, [userLocation, loaded, hasCoordinates]);
 
-  // Sugestões de endereço no servidor (debounce ~300 ms; ignora respostas antigas).
-  useEffect(() => {
-    const text = origin.trim();
-    if (skipSuggestRef.current) { skipSuggestRef.current = false; setSuggestions([]); return; }
-    if (text.length < 3 || COORDS_PATTERN.test(text)) { setSuggestions([]); return; }
-    if (!sessionTokenRef.current) sessionTokenRef.current = crypto.randomUUID();
-    const timer = window.setTimeout(async () => {
-      const id = ++suggestIdRef.current;
-      setSuggesting(true);
-      try {
-        const res = await getSuggestions({ data: { input: text.slice(0, 120), sessionToken: sessionTokenRef.current } });
-        if (id === suggestIdRef.current) setSuggestions(res.suggestions);
-      } catch { if (id === suggestIdRef.current) setSuggestions([]); }
-      finally { if (id === suggestIdRef.current) setSuggesting(false); }
-    }, 300);
-    return () => window.clearTimeout(timer);
-  }, [origin, getSuggestions]);
-
   useEffect(() => { mapInstance.current?.setMapTypeId(satellite ? "satellite" : "roadmap"); }, [satellite, loaded]);
+
   useEffect(() => {
     polylineRef.current?.setMap(null);
     if (!route || !mapInstance.current || !loaded) return;
@@ -129,42 +112,52 @@ function Localizacao() {
     return () => polylineRef.current?.setMap(null);
   }, [route, loaded]);
 
+  // A plataforma tenta mostrar a localização do utilizador automaticamente.
   function locate(silent = false) {
     if (!navigator.geolocation) { if (!silent) toast.error("O dispositivo não permite obter a localização."); return; }
     setLocating(true);
     navigator.geolocation.getCurrentPosition((pos) => {
-      const point = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
-      setUserLocation({ ...point, accuracy: pos.coords.accuracy });
-      setPosition(point);
-      setOrigin(`${point.latitude},${point.longitude}`);
-      skipSuggestRef.current = true;
-      setSuggestions([]);
-      setRoute(null);
+      setUserLocation({ latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: pos.coords.accuracy });
       setLocating(false);
       if (!silent) toast.success("Localização obtida");
+      if (route) setRoute(null);
     }, (error) => {
       setLocating(false);
-      if (!silent) toast.error(error.code === 1 ? "Localização não autorizada. Pode escrever o ponto de partida." : "Não foi possível obter a localização. Escreva o ponto de partida.");
+      if (!silent) toast.error(error.code === 1 ? "Localização não autorizada. Toque em «Encontrar a Escola» para continuar." : "Não foi possível obter a localização.");
     }, { timeout: 12000, maximumAge: 60000, enableHighAccuracy: true });
   }
 
-  // Deteta automaticamente a posição quando a permissão já foi concedida antes.
   useEffect(() => {
     if (autoLocatedRef.current || !navigator.geolocation) return;
     autoLocatedRef.current = true;
     try {
       navigator.permissions?.query({ name: "geolocation" as PermissionName })
-        .then((status) => { if (status.state === "granted") locate(true); })
-        .catch(() => { /* Sem API de permissões: o utilizador usa o botão. */ });
-    } catch { /* Ignorado. */ }
+        .then((status) => { if (status.state === "granted") locate(true); else locate(true); })
+        .catch(() => { locate(true); });
+    } catch { locate(true); }
+    // Sem API de permissões: tenta mesmo assim; o navegador pede autorização.
   }, []);
 
-  async function calculateRoute() {
-    if (!origin.trim()) { toast.error("Indique o ponto de partida."); return; }
+  // Botão principal: parte da posição automática; se não houver, usa o endereço de referência.
+  async function findSchool() {
+    const origin: { latitude: number; longitude: number } | string = userLocation
+      ? { latitude: userLocation.latitude, longitude: userLocation.longitude }
+      : (fallbackOriginRef.current ?? REFERENCE_ADDRESS);
     if (!user) { window.open(navigationHref, "_blank", "noopener,noreferrer"); return; }
     setCalculating(true); setRouteError("");
-    try { setRoute(await calculate({ data: { origin: position ?? origin, mode } })); }
-    catch (e) { setRouteError(e instanceof Error ? e.message : "Não foi possível calcular o trajeto."); }
+    try {
+      if (typeof origin === "string" && !fallbackOriginRef.current) {
+        const found = await findPlace({ data: { query: REFERENCE_ADDRESS } });
+        if (found) {
+          fallbackOriginRef.current = found;
+          setRoute(await calculate({ data: { origin: found, mode } }));
+        } else {
+          setRoute(await calculate({ data: { origin: REFERENCE_ADDRESS, mode } }));
+        }
+      } else {
+        setRoute(await calculate({ data: { origin, mode } }));
+      }
+    } catch (e) { setRouteError(e instanceof Error ? e.message : "Não foi possível calcular o trajeto."); }
     finally { setCalculating(false); }
   }
 
@@ -175,7 +168,6 @@ function Localizacao() {
       else { await navigator.clipboard.writeText(`${address}\n${url}`); toast.success("Localização copiada"); }
     } catch (e) { if (!(e instanceof Error && e.name === "AbortError")) toast.error("Não foi possível partilhar a localização."); }
   }
-
 
   return <AppShell><div className="mx-auto max-w-6xl px-4 py-8">
     <header className="mb-6"><p className="mb-2 flex items-center gap-2 text-sm text-primary"><MapPin className="h-4 w-4" /> Matola Gare · Maputo</p><h1 className="text-3xl font-bold">Localização da Escola</h1><p className="mt-2 text-muted-foreground">{school?.name || "Escola Secundária da Matola Gare"}</p></header>
@@ -192,14 +184,9 @@ function Localizacao() {
       </section>
       <section className="min-w-0 border-border lg:border-l lg:pl-6"><h2 className="mb-4 flex items-center gap-2 text-lg font-semibold"><Navigation className="h-5 w-5 text-primary" /> Como chegar</h2>
         <div className="mb-5 grid grid-cols-3 gap-1 rounded-lg bg-surface-variant p-1" role="group" aria-label="Transporte">{MODES.map(({ value, label, icon: Icon }) => <Button key={value} variant={mode === value ? "default" : "ghost"} className="h-14 flex-col gap-1 px-1 text-xs" aria-pressed={mode === value} onClick={() => { setMode(value); setRoute(null); }}><Icon />{label}</Button>)}</div>
-        <form onSubmit={(e) => { e.preventDefault(); void calculateRoute(); }} className="space-y-3"><label className="block text-sm font-medium" htmlFor="origin">Ponto de partida</label>
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input id="origin" value={origin} onChange={(e) => { setOrigin(e.target.value); setPosition(null); setRoute(null); }} placeholder="Pesquisar endereço ou local de partida" autoComplete="off" maxLength={200} className="h-11 w-full rounded-lg border border-input bg-background pl-9 pr-9 text-sm outline-none focus:ring-2 focus:ring-primary" />
-            {suggesting && <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />}
-            {suggestions.length > 0 && <ul role="listbox" aria-label="Sugestões de endereço" className="absolute left-0 right-0 top-full z-10 mt-1 max-h-60 overflow-y-auto rounded-lg border border-border bg-background py-1 shadow-lg">{suggestions.map((s) => <li key={s.placeId}><button type="button" role="option" aria-selected={false} className="flex w-full items-start gap-2 px-3 py-2 text-left text-sm hover:bg-surface-variant" onClick={() => { skipSuggestRef.current = true; setOrigin(s.text); setSuggestions([]); setPosition(null); setRoute(null); toast.success("Ponto de partida definido"); }}><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{s.text}</button></li>)}</ul>}
-          </div>
-          <Button type="button" variant="outline" className="w-full" disabled={locating} onClick={() => locate(false)}>{locating ? <Loader2 className="animate-spin" /> : <LocateFixed />} Usar a minha localização</Button><Button type="submit" className="h-11 w-full" disabled={calculating}>{calculating ? <Loader2 className="animate-spin" /> : <Navigation />}{user ? "Calcular trajeto" : "Iniciar trajeto no Maps"}</Button></form>
+        <Button className="h-12 w-full" disabled={calculating || locating} onClick={findSchool}>{calculating ? <Loader2 className="animate-spin" /> : locating ? <Loader2 className="animate-spin" /> : <Search />}{calculating ? "A calcular…" : locating ? "A obter a sua posição…" : "Encontrar a Escola"}</Button>
+        <p className="mt-2 text-xs text-muted-foreground">{userLocation ? "Parte da sua posição atual." : "Sem posição automática: parte do ponto de referência mais próximo (Alemony Wochanhama & Filhos)."}</p>
+        <Button type="button" variant="outline" className="mt-3 w-full" disabled={locating} onClick={() => locate(false)}>{locating ? <Loader2 className="animate-spin" /> : <LocateFixed />} Atualizar a minha posição</Button>
         <Button asChild variant="secondary" className="mt-3 w-full"><a href={navigationHref} target="_blank" rel="noreferrer"><ExternalLink /> Abrir no Google Maps</a></Button>
         {routeError && <p role="alert" className="mt-4 break-words text-sm text-destructive">{routeError}</p>}
         {route && <div className="mt-6 border-t border-border pt-4"><div className="mb-4 grid grid-cols-2 gap-3"><div><p className="text-xs text-muted-foreground">Distância</p><strong>{route.distance}</strong></div><div><p className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="h-3 w-3" /> Duração estimada</p><strong>{route.duration}</strong></div></div><ol className="max-h-80 space-y-3 overflow-y-auto text-sm">{route.steps.map((step, i) => <li key={i} className="flex gap-2"><span className="font-medium text-primary">{i + 1}.</span><span>{step.replace(/<[^>]*>/g, "")}</span></li>)}</ol><Button variant="ghost" className="mt-3" onClick={() => { setRoute(null); setRouteError(""); }}><RotateCcw /> Limpar trajeto</Button></div>}
