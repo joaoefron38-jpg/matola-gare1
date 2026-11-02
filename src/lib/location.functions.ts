@@ -55,24 +55,24 @@ export const calculateSchoolRoute = createServerFn({ method: "POST" })
     };
   });
 
-// Sugestões de endereço para o campo "Ponto de partida" (Places API New via gateway).
-export const autocompleteAddressSuggestions = createServerFn({ method: "POST" })
+// Pesquisa um endereço/local e devolve as coordenadas (Places API New via gateway).
+export const searchPlaceCoordinates = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({
-    input: z.string().trim().min(3).max(120),
-    sessionToken: z.string().uuid(),
+    query: z.string().trim().min(3).max(200),
   }).parse(input))
   .handler(async ({ data }) => {
     const key = process.env["GOOGLE_MAPS_API_KEY"];
     const auth = process.env["LOVABLE_API_KEY"];
     if (!key || !auth) throw new Error("A pesquisa de endereços não está configurada.");
-    const response = await fetch("https://connector-gateway.lovable.dev/google_maps/places/v1/places:autocomplete", {
+    const response = await fetch("https://connector-gateway.lovable.dev/google_maps/places/v1/places:searchText", {
       method: "POST", signal: AbortSignal.timeout(10000),
       headers: {
         Authorization: `Bearer ${auth}`, "X-Connection-Api-Key": key, "Content-Type": "application/json",
-        "X-Goog-FieldMask": "suggestions.placePrediction.placeId,suggestions.placePrediction.text.text",
+        "X-Goog-FieldMask": "places.location",
       },
       body: JSON.stringify({
-        input: data.input, sessionToken: data.sessionToken, languageCode: "pt",
+        textQuery: data.query, languageCode: "pt",
         locationBias: { circle: { center: { latitude: -25.9622, longitude: 32.4589 }, radius: 50000 } },
       }),
     });
@@ -88,10 +88,8 @@ export const autocompleteAddressSuggestions = createServerFn({ method: "POST" })
       }
       throw new Error(`Google Maps (${response.status}): ${detail}`);
     }
-    const result = await response.json() as { suggestions?: { placePrediction?: { placeId?: string; text?: { text?: string } } }[] };
-    const suggestions = (result.suggestions ?? []).flatMap((s) => {
-      const prediction = s.placePrediction;
-      return prediction?.placeId && prediction.text?.text ? [{ placeId: prediction.placeId, text: prediction.text.text }] : [];
-    });
-    return { suggestions };
+    const result = await response.json() as { places?: { location?: { latitude?: number; longitude?: number } }[] };
+    const location = result.places?.[0]?.location;
+    if (!location?.latitude || !location?.longitude) return null;
+    return { latitude: location.latitude, longitude: location.longitude };
   });
