@@ -134,10 +134,10 @@ function Localizacao() {
     autoLocatedRef.current = true;
     try {
       navigator.permissions?.query({ name: "geolocation" as PermissionName })
-        .then((status) => { if (status.state === "granted") locate(true); else locate(true); })
+        .then((status) => { locate(true); if (status.state === "denied") toast.info("Autorize a localização no navegador para ver a sua posição."); })
         .catch(() => { locate(true); });
     } catch { locate(true); }
-    // Sem API de permissões: tenta mesmo assim; o navegador pede autorização.
+    // Tenta sempre: se a permissão já estiver concedida, aparece sem pedir nada; senão o navegador pergunta.
   }, []);
 
   // Botão principal: parte da posição automática; se não houver, usa o endereço de referência.
