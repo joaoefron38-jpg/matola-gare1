@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { calculateSchoolRoute, searchPlaceCoordinates } from "@/lib/location.functions";
 import { mapsDirectionsUrl, validCoordinates, type TravelMode } from "@/lib/location";
 import { MapPin, Navigation, ExternalLink, Clock, Car, Footprints, Bike, Copy, Share2, LocateFixed, Locate, Loader2, RotateCcw, Layers, Phone, Search } from "lucide-react";
@@ -26,6 +27,7 @@ const MODES = [{ value: "DRIVE", label: "Carro", icon: Car }, { value: "WALK", l
 const REFERENCE_ADDRESS = "Alemony Wochanhama & Filhos, Matola, Moçambique";
 
 function Localizacao() {
+  const { user } = useAuth();
   const { data: school, isPending, isError, refetch } = useQuery({
     queryKey: ["school_info"], queryFn: async () => {
       const { data, error } = await supabase.from("school_info").select("*").eq("id", 1).maybeSingle();
