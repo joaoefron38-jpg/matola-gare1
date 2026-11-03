@@ -9,3 +9,5 @@
 - [x] Sino de notificações: feedback ao clicar (aviso em português) e mensagem clara quando o navegador bloqueia as notificações.
 - [x] Mostrar a posição exata do utilizador na Localização (marcador + círculo de precisão, "Centrar em mim", ativação automática com permissão já concedida) e sugestões de endereço no servidor.
 - [x] Remover o campo "Ponto de partida"; posição automática no arranque e botão "Encontrar a Escola" (fallback: Alemony Wochanhama & Filhos, pesquisado no servidor).
+- [x] Corrigir as coordenadas da escola para Alemony Wochanhama & Filhos (-25.8310, 32.4444).
+- [x] Pastas na Biblioteca: gestão no painel (criar/renomear/eliminar), campo "Pasta" ao publicar (existente ou criar nova) e pastas visíveis para os alunos.
