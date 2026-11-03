@@ -182,6 +182,27 @@ export type Database = {
         }
         Relationships: []
       }
+      library_folders: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       library_items: {
         Row: {
           allow_download: boolean
@@ -191,6 +212,7 @@ export type Database = {
           created_by: string | null
           description: string | null
           external_link: string | null
+          folder_id: string | null
           id: string
           pdf_link: string | null
           tags: string[] | null
@@ -205,6 +227,7 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           external_link?: string | null
+          folder_id?: string | null
           id?: string
           pdf_link?: string | null
           tags?: string[] | null
@@ -219,13 +242,22 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           external_link?: string | null
+          folder_id?: string | null
           id?: string
           pdf_link?: string | null
           tags?: string[] | null
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "library_items_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "library_folders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       news_items: {
         Row: {

@@ -6,13 +6,14 @@ import { notifyPublication } from "@/lib/push.functions";
 import { Plus, Trash2, Save, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { FileUpload } from "./FileUpload";
+import { FolderPicker, useFolders } from "./LibraryFolders";
 
 const NOTIFY_TABLES = new Set(["library_items", "knowledge_items", "gallery_items", "news_items"]);
 
 export type Field = {
   name: string;
   label: string;
-  type?: "text" | "textarea" | "url" | "date" | "datetime" | "checkbox" | "number";
+  type?: "text" | "textarea" | "url" | "date" | "datetime" | "checkbox" | "number" | "folder";
   required?: boolean;
   upload?: { accept?: string; folder?: string };
 };
@@ -27,6 +28,7 @@ export function CrudSection<T extends Record<string, any>>({
 }) {
   const qc = useQueryClient();
   const notify = useServerFn(notifyPublication);
+  const { data: folders } = useFolders();
   const [editing, setEditing] = useState<T | null>(null);
   const [creating, setCreating] = useState(false);
 
@@ -96,7 +98,7 @@ export function CrudSection<T extends Record<string, any>>({
             <div key={row.id} className="surface-card p-4 flex flex-col sm:flex-row sm:items-center gap-3">
               <div className="min-w-0 flex-1 space-y-1">
                 {fields.slice(0, 3).map((f, i) => {
-                  const value = f.type === "checkbox" ? (row[f.name] ? "Sim" : "Não") : String(row[f.name] ?? "—");
+                  const value = f.type === "checkbox" ? (row[f.name] ? "Sim" : "Não") : f.type === "folder" ? (folders?.find((x) => x.id === row[f.name])?.name ?? "—") : String(row[f.name] ?? "—");
                   return (
                     <div key={f.name} className={i === 0 ? "font-medium break-words" : "text-sm text-muted-foreground line-clamp-2 break-words"}>
                       {i === 0 ? value : `${f.label}: ${value}`}
@@ -123,6 +125,18 @@ export function CrudSection<T extends Record<string, any>>({
 
 function FormPanel({ fields, initial, onCancel, onSave }: { fields: Field[]; initial: any; onCancel: () => void; onSave: (r: any) => void }) {
   const [row, setRow] = useState<any>(initial);
+  // Ao guardar, cria primeiro a nova pasta, se o utilizador escolheu essa opção.
+  async function submit() {
+    const newName = String(row.__new_folder ?? "").trim();
+    if (row.folder_id === "__new" || newName) {
+      if (!newName) return toast.error("Escreva o nome da nova pasta.");
+      const { data: created, error } = await supabase.from("library_folders").insert({ name: newName }).select("id").single();
+      if (error || !created) return toast.error(error?.message ?? "Não foi possível criar a pasta.");
+      onSave({ ...row, folder_id: created.id, __new_folder: "" });
+      return;
+    }
+    onSave(row);
+  }
   return (
     <div className="surface-card p-5">
       <div className="grid gap-3 md:grid-cols-2">
@@ -147,6 +161,8 @@ function FormPanel({ fields, initial, onCancel, onSave }: { fields: Field[]; ini
                   Agora
                 </button>
               </div>
+            ) : f.type === "folder" ? (
+              <FolderPicker value={row[f.name] ?? ""} newFolderName={row.__new_folder ?? ""} onChange={(folderId, newName) => setRow({ ...row, [f.name]: folderId, __new_folder: newName })} />
             ) : f.type === "checkbox" ? (
               <input type="checkbox" checked={!!row[f.name]} onChange={(e) => setRow({ ...row, [f.name]: e.target.checked })} className="w-5 h-5" />
             ) : (
@@ -169,7 +185,7 @@ function FormPanel({ fields, initial, onCancel, onSave }: { fields: Field[]; ini
       </div>
       <div className="flex gap-2 mt-4 justify-end">
         <button onClick={onCancel} className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-secondary text-secondary-foreground text-sm"><X className="w-4 h-4" /> Cancelar</button>
-        <button onClick={() => onSave(row)} className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground text-sm"><Save className="w-4 h-4" /> Guardar</button>
+        <button onClick={() => void submit()} className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground text-sm"><Save className="w-4 h-4" /> Guardar</button>
       </div>
     </div>
   );
