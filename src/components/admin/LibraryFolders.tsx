@@ -30,7 +30,8 @@ export function FolderManager() {
   const qc = useQueryClient();
   const { data: folders, isLoading } = useFolders();
   const { data: items } = useQuery({
-    queryKey: ["library_items"],
+    // Chave própria para não colidir com a lista completa de livros no CrudSection.
+    queryKey: ["library_items", "folder-counts"],
     queryFn: async () => {
       const { data, error } = await supabase.from("library_items").select("folder_id");
       if (error) throw error;

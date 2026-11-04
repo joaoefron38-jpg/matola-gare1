@@ -33,7 +33,9 @@ export function CrudSection<T extends Record<string, any>>({
   const [creating, setCreating] = useState(false);
 
   const { data } = useQuery({
-    queryKey: [table],
+    // Chave própria: "library_items" a solo partilhava cache com a contagem de pastas,
+    // que devolve linhas sem id e quebrava editar/apagar.
+    queryKey: ["crud", table],
     queryFn: async () => {
       const { data, error } = await (supabase.from(table as any).select("*").order(orderBy, { ascending: false }));
       if (error) throw error;

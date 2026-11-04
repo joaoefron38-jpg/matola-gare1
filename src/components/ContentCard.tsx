@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Share2, Heart, Download, BookOpen, Play } from "lucide-react";
+import { Share2, Heart, Download, BookOpen, Play, FolderOpen } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 import { downloadFile } from "@/lib/download";
@@ -19,6 +19,7 @@ export type CardAction = {
   externalLink?: string | null;
   videoLink?: string | null;
   allowDownload?: boolean;
+  folderName?: string | null;
 };
 
 export function ContentCard({ item }: { item: CardAction }) {
@@ -110,6 +111,11 @@ export function ContentCard({ item }: { item: CardAction }) {
         )}
       </div>
       <div className="p-4 flex-1 flex flex-col gap-2">
+        {item.folderName && (
+          <span className="inline-flex items-center gap-1 w-fit text-xs rounded-full bg-surface-variant text-muted-foreground px-2 py-0.5">
+            <FolderOpen className="w-3 h-3" /> {item.folderName}
+          </span>
+        )}
         <h3 className="font-semibold leading-tight line-clamp-2">{item.title}</h3>
         {item.description && <p className="text-sm text-muted-foreground line-clamp-3">{item.description}</p>}
         <div className="mt-auto pt-3 flex flex-wrap gap-2">
