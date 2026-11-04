@@ -95,6 +95,7 @@ function Biblioteca() {
               <ContentCard key={it.id} item={{
                 type: "library", id: it.id, title: it.title, description: it.description, image: it.cover_url,
                 bookLink: it.book_link, pdfLink: it.pdf_link, externalLink: it.external_link, allowDownload: it.allow_download,
+                folderName: folders?.find((f) => f.id === it.folder_id)?.name ?? null,
               }} />
             ))}
           </div>
