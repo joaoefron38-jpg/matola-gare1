@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const TEN_YEARS = 60 * 60 * 24 * 365 * 10;
-const MAX_MB = 1024;
+const MAX_MB = 950;
 
 function contentTypeFor(file: File) {
   if (file.type && file.type !== "application/octet-stream") return file.type;
