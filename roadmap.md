@@ -11,3 +11,4 @@
 - [x] Remover o campo "Ponto de partida"; posição automática no arranque e botão "Encontrar a Escola" (fallback: Alemony Wochanhama & Filhos, pesquisado no servidor).
 - [x] Corrigir as coordenadas da escola para Alemony Wochanhama & Filhos (-25.8310, 32.4444).
 - [x] Pastas na Biblioteca: gestão no painel (criar/renomear/eliminar), campo "Pasta" ao publicar (existente ou criar nova) e pastas visíveis para os alunos.
+- [x] Corrigir carregamento de livros PDF no painel, com tipo MIME fiável, autenticação da sessão, limite compatível com PDFs grandes e mensagens de erro úteis; validar upload e remoção do ficheiro de teste.

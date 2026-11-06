@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const TEN_YEARS = 60 * 60 * 24 * 365 * 10;
-const MAX_MB = 100;
+const MAX_MB = 950;
 
 function contentTypeFor(file: File) {
   if (file.type && file.type !== "application/octet-stream") return file.type;
@@ -83,7 +83,7 @@ export function FileUpload({
         xhr.setRequestHeader("x-upsert", "false");
         xhr.setRequestHeader("cache-control", "31536000");
          xhr.setRequestHeader("content-type", contentType);
-        xhr.timeout = 180000;
+        xhr.timeout = 900000;
         xhr.upload.onprogress = (ev) => {
           if (ev.lengthComputable) setProgress(Math.round((ev.loaded / ev.total) * 100));
         };
@@ -92,7 +92,7 @@ export function FileUpload({
            else reject(new Error(uploadErrorMessage(xhr)));
         };
         xhr.onerror = () => reject(new Error("Falha de rede ao carregar o ficheiro. Verifique a ligação e tente novamente."));
-        xhr.ontimeout = () => reject(new Error("O carregamento demorou demasiado. Tente novamente, de preferência com um ficheiro mais pequeno."));
+        xhr.ontimeout = () => reject(new Error("O carregamento demorou demasiado. Verifique a ligação e tente novamente."));
         xhr.send(file);
       });
 
